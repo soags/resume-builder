@@ -4,8 +4,6 @@ import { CodeChallengeMethod, OAuth2Strategy } from 'remix-auth-oauth2'
 
 export type User = {
   id: string
-  email: string
-  name: string
 }
 
 export const sessionStorage = createCookieSessionStorage({

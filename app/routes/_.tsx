@@ -4,7 +4,6 @@ import type { Route } from './+types/_'
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await getUser(request)
-  console.log({ user })
   return { user }
 }
 
