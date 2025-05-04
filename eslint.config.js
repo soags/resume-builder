@@ -24,5 +24,10 @@ export default defineConfig([
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   pluginReact.configs.flat['jsx-runtime'],
-  configPrettier
+  configPrettier,
+  {
+    rules: {
+      "no-empty-pattern": "off", // 空のオブジェクトパターンを許容
+  },
+  }
 ])
