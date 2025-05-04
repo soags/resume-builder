@@ -6,6 +6,7 @@ export default function Layout() {
       {/* Header */}
       <header className="flex items-center border-b border-slate-300 px-6 py-4">
         <h1 className="text-xl font-bold">レジュメビルダー</h1>
+        <a href="/auth/google">Googleログイン</a>
       </header>
 
       {/* Main Content */}

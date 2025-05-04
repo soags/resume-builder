@@ -1,14 +1,14 @@
 import { redirect } from 'react-router'
 import { Button } from '~/components/ui/button'
 import type { Route } from './+types/basics'
-import { requireUserId } from '~/utils/auth.server'
+// import { requireUserId } from '~/services/auth.server'
 import { getResumeByUserId, upsertResume } from '~/models/resume.server'
 import { Field } from '~/components/ui/field'
 import { parseFormData, useForm, validationError } from '@rvf/react-router'
 import { basicsSchema } from '~/validators/basics'
 
 export async function loader() {
-  const userId = await requireUserId()
+  const userId = ''
   const resume = await getResumeByUserId(userId)
   return resume
 }
@@ -22,7 +22,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   const { name, label } = result.data
 
-  const userId = await requireUserId()
+  const userId = ''
 
   await upsertResume(userId, name, label)
 
