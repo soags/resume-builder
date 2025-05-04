@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router'
+import { cn } from '~/lib/utils'
 
 export default function Layout() {
   return (
@@ -36,7 +37,12 @@ function SectionLink({
   return (
     <NavLink
       to={to}
-      className="rounded-lg px-4 py-2 text-slate-700 hover:bg-slate-300"
+      className={({ isActive }) =>
+        cn(
+          'rounded-lg px-4 py-2 text-slate-700 hover:bg-slate-100',
+          isActive && 'bg-slate-200 font-semibold'
+        )
+      }
     >
       {children}
     </NavLink>

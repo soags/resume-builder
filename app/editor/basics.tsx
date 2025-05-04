@@ -3,10 +3,6 @@ import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 
-export function meta() {
-  return [{ title: '職務経歴書ビルダー' }, { name: 'description', content: '' }]
-}
-
 export default function Layout() {
   return (
     <div className="w-3xl rounded-lg border border-slate-300 p-8">
