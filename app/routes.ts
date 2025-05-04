@@ -14,6 +14,8 @@ export default [
     ]),
   ]),
   ...prefix('auth', [
+    route('login', './routes/auth/login.tsx'),
+    route('logout', './routes/auth/logout.tsx'),
     route('google', './routes/auth/google.tsx', [
       route('callback', './routes/auth/google.callback.tsx'),
     ]),

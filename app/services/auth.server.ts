@@ -1,14 +1,42 @@
+import { createCookieSessionStorage } from 'react-router'
 import { Authenticator } from 'remix-auth'
 import { CodeChallengeMethod, OAuth2Strategy } from 'remix-auth-oauth2'
 
-export type SessionUser = {
+export type User = {
   id: string
   email: string
   name: string
 }
 
-export const authenticator = new Authenticator<SessionUser>()
+export const sessionStorage = createCookieSessionStorage({
+  cookie: {
+    name: '__session',
+    httpOnly: true,
+    path: '/',
+    sameSite: 'lax',
+    secrets: [process.env.SESSION_SECRET ?? ''],
+    secure: process.env.NODE_ENV === 'production',
+  },
+})
 
+export async function getSession(request: Request) {
+  return sessionStorage.getSession(request.headers.get('Cookie'))
+}
+
+export async function getUser(request: Request) {
+  const session = await getSession(request)
+  const user = session.get('user')
+  return user ?? null
+}
+
+export async function destroySession(request: Request) {
+  const session = await getSession(request)
+  return sessionStorage.destroySession(session)
+}
+
+export const authenticator = new Authenticator<User>()
+
+// Google OAuth2 Strategy
 authenticator.use(
   new OAuth2Strategy(
     {
@@ -37,7 +65,7 @@ authenticator.use(
         throw new Error('Failed to fetch Google profile')
       }
 
-      const userinfo: SessionUser = await res.json()
+      const userinfo: User = await res.json()
       return userinfo
     }
   ),

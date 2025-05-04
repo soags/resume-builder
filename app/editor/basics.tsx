@@ -1,7 +1,6 @@
 import { redirect } from 'react-router'
 import { Button } from '~/components/ui/button'
 import type { Route } from './+types/basics'
-// import { requireUserId } from '~/services/auth.server'
 import { getResumeByUserId, upsertResume } from '~/models/resume.server'
 import { Field } from '~/components/ui/field'
 import { parseFormData, useForm, validationError } from '@rvf/react-router'
@@ -29,10 +28,7 @@ export async function action({ request }: Route.ActionArgs) {
   return redirect('/editor/basics')
 }
 
-export default function BasicsForm({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function BasicsForm({ loaderData }: Route.ComponentProps) {
   const resume = loaderData ?? {
     name: '',
     label: '',
@@ -45,8 +41,6 @@ export default function BasicsForm({
       label: resume.label,
     },
   })
-
-  console.log('actionData', actionData)
 
   return (
     <form

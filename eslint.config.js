@@ -27,7 +27,7 @@ export default defineConfig([
   configPrettier,
   {
     rules: {
-      "no-empty-pattern": "off", // 空のオブジェクトパターンを許容
+      'no-empty-pattern': 'off', // 空のオブジェクトパターンを許容
+    },
   },
-  }
 ])

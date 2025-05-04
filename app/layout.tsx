@@ -1,12 +1,35 @@
 import { Outlet } from 'react-router'
+import type { Route } from './+types/layout'
+import { getUser } from './services/auth.server'
 
-export default function Layout() {
+export async function loader({ request }: Route.LoaderArgs) {
+  const user = await getUser(request)
+  console.log({ user })
+  return { user }
+}
+
+export default function Layout({ loaderData }: Route.ComponentProps) {
+  const { user } = loaderData
+
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
       <header className="flex items-center border-b border-slate-300 px-6 py-4">
         <h1 className="text-xl font-bold">レジュメビルダー</h1>
-        <a href="/auth/google">Googleログイン</a>
+        {user ? (
+          <>
+            <span>
+              こんにちは、{user.name ?? user.email ?? 'ユーザー'} さん！
+            </span>
+            <a href="/auth/logout" className="text-blue-500">
+              ログアウト
+            </a>
+          </>
+        ) : (
+          <a href="/auth/login" className="text-blue-500">
+            ログイン
+          </a>
+        )}
       </header>
 
       {/* Main Content */}

@@ -1,4 +1,6 @@
 import { authenticator } from '~/services/auth.server'
+import type { Route } from './+types/google'
 
-export const loader = ({ request }: { request: Request }) =>
-  authenticator.authenticate('google', request)
+export async function loader({ request }: Route.LoaderArgs) {
+  await authenticator.authenticate('google', request)
+}
