@@ -29,7 +29,10 @@ export async function action({ request }: Route.ActionArgs) {
   return redirect('/editor/basics')
 }
 
-export default function BasicsForm({ loaderData }: Route.ComponentProps) {
+export default function BasicsForm({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
   const resume = loaderData ?? {
     name: '',
     label: '',
@@ -42,6 +45,8 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
       label: resume.label,
     },
   })
+
+  console.log('actionData', actionData)
 
   return (
     <form
@@ -56,7 +61,11 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
           <Button type="submit" className="flex-1 bg-sky-800 hover:bg-sky-950">
             保存
           </Button>
-          <Button type="reset" className="flex-1" variant="outline">
+          <Button
+            className="flex-1"
+            variant="outline"
+            onClick={() => form.resetForm()}
+          >
             元に戻す
           </Button>
         </div>

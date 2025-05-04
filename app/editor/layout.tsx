@@ -6,8 +6,8 @@ export default function Layout() {
     <div className="flex justify-center p-6">
       <div className="flex w-full max-w-5xl">
         <div className="w-full p-4">
-          <div className="rounded-lg border border-slate-300 px-2 py-4">
-            <nav className="flex flex-col space-y-4">
+          <div className="rounded-lg border border-slate-300 p-2">
+            <nav className="flex flex-col space-y-2">
               <SectionLink to="/editor/basics">基本情報</SectionLink>
               <SectionLink to="/editor/techStack">技術スタック</SectionLink>
               <SectionLink to="/editor/highlights">スキル</SectionLink>
