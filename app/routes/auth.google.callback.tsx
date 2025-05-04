@@ -4,7 +4,7 @@ import {
   getSession,
   sessionStorage,
 } from '~/services/auth.server'
-import type { Route } from './+types/google.callback'
+import type { Route } from './+types/auth.google.callback'
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await authenticator.authenticate('google', request)

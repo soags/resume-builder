@@ -1,10 +1,10 @@
 import { redirect } from 'react-router'
 import { Button } from '~/components/ui/button'
-import type { Route } from './+types/basics'
 import { getResumeByUserId, upsertResume } from '~/models/resume.server'
 import { Field } from '~/components/ui/field'
 import { parseFormData, useForm, validationError } from '@rvf/react-router'
 import { basicsSchema } from '~/validators/basics'
+import type { Route } from './+types/_.editor.basics'
 
 export async function loader() {
   const userId = ''
