@@ -1,14 +1,17 @@
 import prisma from '~/lib/prisma.server'
-import type { SkillInput } from '~/validators/skills'
+import type { Skill } from '~/generated/prisma'
 
-export async function getSkills(resumeId: string) {
+export async function getSkills(resumeId: string): Promise<Skill[]> {
   return await prisma.skill.findMany({
     where: { resumeId },
     orderBy: { orderNo: 'asc' },
   })
 }
 
-export async function updateSkills(resumeId: string, skills: SkillInput[]) {
+export async function updateSkills(
+  resumeId: string,
+  skills: Pick<Skill, 'text' | 'orderNo'>[]
+) {
   await prisma.skill.deleteMany({ where: { resumeId } })
 
   await Promise.all(
@@ -16,7 +19,7 @@ export async function updateSkills(resumeId: string, skills: SkillInput[]) {
       prisma.skill.create({
         data: {
           resumeId,
-          title: skill.title,
+          text: skill.text,
           orderNo: skill.orderNo,
         },
       })

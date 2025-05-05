@@ -1,5 +1,5 @@
 import prisma from '~/lib/prisma.server'
-import type { BasicsInput } from '~/validators/basics'
+import type { Resume } from '~/generated/prisma'
 
 export async function getResumesByUserId(userId: string) {
   return await prisma.resume.findMany({
@@ -12,10 +12,19 @@ export async function getResume(resumeId: string) {
   return await prisma.resume.findUnique({ where: { id: resumeId } })
 }
 
-export async function updateResumeBasics(
-  resumeId: string,
-  inputs: BasicsInput
-) {
+type Basics = Pick<
+  Resume,
+  | 'title'
+  | 'name'
+  | 'label'
+  | 'github'
+  | 'qiita'
+  | 'zenn'
+  | 'speakerDeck'
+  | 'slideShare'
+>
+
+export async function updateResumeBasics(resumeId: string, inputs: Basics) {
   return await prisma.resume.update({
     where: { id: resumeId },
     data: {

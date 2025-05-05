@@ -1,135 +1,120 @@
-import { useState } from 'react'
-import { closestCenter, DndContext, type DragEndEvent } from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import type { SkillInput } from '~/validators/skills'
-import { SortableSkillField } from './sortable-skill-field'
-import { Button } from '~/components/ui/button'
-import { redirect, useSubmit } from 'react-router'
 import type { Route } from './+types/skill'
 import { getSkills, updateSkills } from '~/models/skill.server'
 import { nanoid } from 'nanoid/non-secure'
+import {
+  parseFormData,
+  useFieldArray,
+  useForm,
+  validationError,
+} from '@rvf/react-router'
+import { z } from 'zod'
+import { Button } from '~/components/ui/button'
+import { SortableSkillItem } from './sortable-skill-item'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { closestCenter, DndContext, type DragEndEvent } from '@dnd-kit/core'
 
-type SortableSkillInput = SkillInput & {
-  id: string
-}
+const schema = z.object({
+  skills: z.array(
+    z.object({
+      id: z.string(),
+      text: z.string().max(50),
+    })
+  ),
+})
 
 export async function loader({ params }: Route.LoaderArgs) {
   const skills = await getSkills(params.resumeId)
-
-  // 入力用オブジェクトに変換
-  const sortableSkills: SortableSkillInput[] = skills.map((skill) => ({
-    ...skill,
-    id: nanoid(),
-  }))
-
-  // 0件の場合は空のデータをセット
-  if (sortableSkills.length === 0) {
-    sortableSkills.push({
-      id: nanoid(),
-      title: '',
-      orderNo: 0,
-    })
+  return {
+    skills: skills.length
+      ? skills.map((s) => ({ id: nanoid(), text: s.text }))
+      : [{ id: nanoid(), text: '' }],
   }
-
-  return sortableSkills
 }
 
 export async function action({ params, request }: Route.ActionArgs) {
-  const items = await request.json()
+  const result = await parseFormData(request, schema)
+  if (result.error) {
+    return validationError(result.error, result.submittedData)
+  }
 
-  await updateSkills(params.resumeId, items)
+  const skills = result.data.skills.map((item, index) => ({
+    text: item.text,
+    orderNo: index,
+  }))
 
-  return redirect('./')
+  await updateSkills(params.resumeId, skills)
+
+  return {}
 }
 
 export default function Skill({ loaderData }: Route.ComponentProps) {
-  const [items, setItems] = useState<SortableSkillInput[]>(loaderData)
+  const form = useForm({
+    method: 'post',
+    schema: schema,
+    defaultValues: loaderData,
+    onSubmitSuccess: () => {
+      alert('保存しました')
+    },
+  })
 
-  const submit = useSubmit()
+  const fields = useFieldArray(form.scope('skills'))
 
-  const handleAddSkill = () => {
-    setItems((items) => [
-      ...items,
-      {
-        id: nanoid(),
-        title: '',
-        orderNo: items.length,
-      },
-    ])
-  }
-  const handleRemoveSkill = (index: number) => {
-    setItems((items) => items.filter((_, i) => i !== index))
-  }
-
-  const handleSkillChange = (index: number, value: string) => {
-    setItems((items) =>
-      items.map((item, i) => (i === index ? { ...item, title: value } : item))
-    )
-  }
-
-  // 並び替え
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
-    if (active.id !== over?.id) {
-      const oldIndex = items.findIndex((item) => item.id === active.id)
-      const newIndex = items.findIndex((item) => item.id === over?.id)
-      setItems((items) => arrayMove(items, oldIndex, newIndex))
-    }
-  }
+    if (!over || active.id === over.id) return
 
-  const handleSave = () => {
-    // リスト順をOrderNoにセット
-    const submitItems: SkillInput[] = items.map((item, index) => ({
-      title: item.title,
-      orderNo: index,
+    // IDから移動前後のインデックスを検索する
+    const idList = fields.map((_, item) => item.value('id'))
+    const oldIndex = idList.indexOf(active.id as string)
+    const newIndex = idList.indexOf(over.id as string)
+
+    if (oldIndex === -1 || newIndex === -1) return
+
+    // 移動前のオブジェクトを取得
+    const items = fields.map((_, item) => ({
+      id: item.value('id'),
+      text: item.value('text'),
     }))
+    const movedItem = items[oldIndex]
 
-    submit(submitItems, { method: 'post', encType: 'application/json' })
+    fields.remove(oldIndex)
+    fields.insert(newIndex, movedItem)
   }
 
   return (
-    <div className="w-3xl rounded-lg border border-slate-300 p-8">
+    <form
+      {...form.getFormProps()}
+      className="w-3xl rounded-lg border border-slate-300 p-8"
+    >
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={items.map((i) => i.id)}
+          items={fields.map((_, item) => item.value('id'))}
           strategy={verticalListSortingStrategy}
         >
           <div className="space-y-4">
-            {items.map((item, index) => (
-              <SortableSkillField
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                count={items.length}
+            {fields.map((key, item, index) => (
+              <SortableSkillItem
+                key={key}
+                idScope={item.scope('id')}
+                textScope={item.scope('text')}
+                count={fields.length()}
                 index={index}
-                onChange={handleSkillChange}
-                onAdd={handleAddSkill}
-                onRemove={handleRemoveSkill}
+                onAdd={() => fields.push({ id: nanoid(), text: '' })}
+                onRemove={(index) => fields.remove(index)}
               />
             ))}
           </div>
         </SortableContext>
-
-        <div className="mt-6 flex gap-8">
-          <Button
-            className="flex-1 bg-sky-800 hover:bg-sky-950"
-            onClick={handleSave}
-          >
-            保存
-          </Button>
-          <Button
-            className="flex-1"
-            variant="outline"
-            onClick={() => setItems(loaderData)}
-          >
-            元に戻す
-          </Button>
-        </div>
       </DndContext>
-    </div>
+
+      <div className="mt-6 flex gap-8">
+        <Button type="submit" className="flex-1 bg-sky-800 hover:bg-sky-950">
+          保存
+        </Button>
+        <Button type="reset" className="flex-1" variant="outline">
+          元に戻す
+        </Button>
+      </div>
+    </form>
   )
 }
