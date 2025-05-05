@@ -1,5 +1,4 @@
-import type { Route } from './+types/skill'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { closestCenter, DndContext, type DragEndEvent } from '@dnd-kit/core'
 import {
   arrayMove,
@@ -7,33 +6,58 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import type { SkillInput } from '~/validators/skills'
-import { SortableSkillField } from './skill/sortable-skill-field'
+import { SortableSkillField } from './sortable-skill-field'
+import { Button } from '~/components/ui/button'
+import { redirect, useSubmit } from 'react-router'
+import type { Route } from './+types/skill'
+import { getSkills, updateSkills } from '~/models/skill.server'
+import { nanoid } from 'nanoid/non-secure'
 
 type SortableSkillInput = SkillInput & {
   id: string
 }
 
-export function loader({}: Route.LoaderArgs) {
-  const sortableSkills: SortableSkillInput[] = [
-    {
-      id: Date.now.toString(),
+export async function loader({ params }: Route.LoaderArgs) {
+  const skills = await getSkills(params.resumeId)
+
+  // 入力用オブジェクトに変換
+  const sortableSkills: SortableSkillInput[] = skills.map((skill) => ({
+    ...skill,
+    id: nanoid(),
+  }))
+
+  // 0件の場合は空のデータをセット
+  if (sortableSkills.length === 0) {
+    sortableSkills.push({
+      id: nanoid(),
       title: '',
-    },
-  ]
+      orderNo: 0,
+    })
+  }
 
   return sortableSkills
+}
+
+export async function action({ params, request }: Route.ActionArgs) {
+  const items = await request.json()
+
+  await updateSkills(params.resumeId, items)
+
+  return redirect('./')
 }
 
 export default function Skill({ loaderData }: Route.ComponentProps) {
   const [items, setItems] = useState<SortableSkillInput[]>(loaderData)
 
+  const submit = useSubmit()
+
   const handleAddSkill = () => {
-    const newId = Date.now().toString()
     setItems((items) => [
       ...items,
       {
-        id: newId,
+        id: nanoid(),
         title: '',
+        orderNo: items.length,
       },
     ])
   }
@@ -47,6 +71,7 @@ export default function Skill({ loaderData }: Route.ComponentProps) {
     )
   }
 
+  // 並び替え
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     if (active.id !== over?.id) {
@@ -56,9 +81,15 @@ export default function Skill({ loaderData }: Route.ComponentProps) {
     }
   }
 
-  useEffect(() => {
-    console.log('items', items)
-  }, [items])
+  const handleSave = () => {
+    // リスト順をOrderNoにセット
+    const submitItems: SkillInput[] = items.map((item, index) => ({
+      title: item.title,
+      orderNo: index,
+    }))
+
+    submit(submitItems, { method: 'post', encType: 'application/json' })
+  }
 
   return (
     <div className="w-3xl rounded-lg border border-slate-300 p-8">
@@ -82,6 +113,22 @@ export default function Skill({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
         </SortableContext>
+
+        <div className="mt-6 flex gap-8">
+          <Button
+            className="flex-1 bg-sky-800 hover:bg-sky-950"
+            onClick={handleSave}
+          >
+            保存
+          </Button>
+          <Button
+            className="flex-1"
+            variant="outline"
+            onClick={() => setItems(loaderData)}
+          >
+            元に戻す
+          </Button>
+        </div>
       </DndContext>
     </div>
   )

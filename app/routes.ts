@@ -21,7 +21,7 @@ export default [
       route('edit/:resumeId', './resumes/edit/layout.tsx', [
         index('./resumes/edit/index.tsx'),
         route('basics', './resumes/edit/basics.tsx'),
-        route('skill', './resumes/edit/skill.tsx'),
+        route('skill', './resumes/edit/skill/skill.tsx'),
       ]),
     ]),
   ]),
