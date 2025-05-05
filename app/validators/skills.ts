@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const SkillSchema = z.object({
   title: z.string().min(0).max(200),
-  orderNo: z.number().int(),
+  orderNo: z.number().int().optional(),
 })
 
 export const SkillsSchema = z.array(SkillSchema)
