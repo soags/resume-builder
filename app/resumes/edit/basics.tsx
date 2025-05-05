@@ -31,6 +31,11 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
     title: '',
     name: '',
     label: '',
+    github: '',
+    qiita: '',
+    zenn: '',
+    speakerDeck: '',
+    slideShare: '',
   }
   const form = useForm({
     method: 'post',
@@ -39,6 +44,11 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
       title: resume.title,
       name: resume.name,
       label: resume.label,
+      github: resume.github,
+      qiita: resume.qiita,
+      zenn: resume.zenn,
+      speakerDeck: resume.speakerDeck,
+      slideShare: resume.slideShare,
     },
   })
 
@@ -51,6 +61,11 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
         <Field label="職務経歴書タイトル" scope={form.scope('title')} />
         <Field label="名前" scope={form.scope('name')} />
         <Field label="職種" scope={form.scope('label')} />
+        <Field label="GitHub" scope={form.scope('github')} />
+        <Field label="Qiita" scope={form.scope('qiita')} />
+        <Field label="Zenn" scope={form.scope('zenn')} />
+        <Field label="SpeakerDeck" scope={form.scope('speakerDeck')} />
+        <Field label="SlideShare" scope={form.scope('slideShare')} />
 
         <div className="mt-6 flex gap-8">
           <Button type="submit" className="flex-1 bg-sky-800 hover:bg-sky-950">

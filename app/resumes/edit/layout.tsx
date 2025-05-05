@@ -8,14 +8,14 @@ export default function Layout() {
         <div className="w-full p-4">
           <div className="rounded-lg border border-slate-300 p-2">
             <nav className="flex flex-col space-y-2">
-              <SectionLink to="/editor/basics">基本情報</SectionLink>
-              <SectionLink to="/editor/techStack">技術スタック</SectionLink>
-              <SectionLink to="/editor/highlights">スキル</SectionLink>
-              <SectionLink to="/editor/work">職務経歴</SectionLink>
-              <SectionLink to="/editor/promotions">自己PR</SectionLink>
-              <SectionLink to="/editor/side-projects">業務外活動</SectionLink>
-              <SectionLink to="/editor/education">学歴</SectionLink>
-              <SectionLink to="/editor/certificates">資格</SectionLink>
+              <SectionLink to="./basics">基本情報</SectionLink>
+              <SectionLink to="./techStack">技術スタック</SectionLink>
+              <SectionLink to="./highlights">スキル</SectionLink>
+              <SectionLink to="./work">職務経歴</SectionLink>
+              <SectionLink to="./promotions">自己PR</SectionLink>
+              <SectionLink to="./side-projects">業務外活動</SectionLink>
+              <SectionLink to="./education">学歴</SectionLink>
+              <SectionLink to="./certificates">資格</SectionLink>
             </nav>
           </div>
         </div>

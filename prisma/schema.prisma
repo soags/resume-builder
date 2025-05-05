@@ -29,13 +29,18 @@ model UserAuth {
 }
 
 model Resume {
-  id        String   @id @default(uuid())
-  userId    String
-  title     String
-  name      String
-  label     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  name        String
+  label       String
+  github      String   @default("")
+  qiita       String   @default("")
+  zenn        String   @default("")
+  speakerDeck String   @default("")
+  slideShare  String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
 }

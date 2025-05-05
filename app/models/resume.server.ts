@@ -22,6 +22,11 @@ export async function updateResumeBasics(
       title: inputs.title,
       name: inputs.name,
       label: inputs.label,
+      github: inputs.github,
+      qiita: inputs.qiita,
+      zenn: inputs.zenn,
+      speakerDeck: inputs.speakerDeck,
+      slideShare: inputs.slideShare,
     },
   })
 }
