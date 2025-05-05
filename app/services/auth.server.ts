@@ -21,10 +21,10 @@ export async function getSession(request: Request) {
   return sessionStorage.getSession(request.headers.get('Cookie'))
 }
 
-export async function getUser(request: Request) {
+export async function getSessionUser(request: Request) {
   const session = await getSession(request)
-  const user = session.get('user')
-  return user ?? null
+  const user: User | undefined = session.get('user')
+  return user
 }
 
 export async function destroySession(request: Request) {
