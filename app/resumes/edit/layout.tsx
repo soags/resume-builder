@@ -10,11 +10,10 @@ export default function Layout() {
             <nav className="flex flex-col space-y-2">
               <SectionLink to="./basics">基本情報</SectionLink>
               <SectionLink to="./techStack">技術スタック</SectionLink>
-              <SectionLink to="./highlights">スキル</SectionLink>
+              <SectionLink to="./skill">スキル</SectionLink>
               <SectionLink to="./work">職務経歴</SectionLink>
               <SectionLink to="./promotions">自己PR</SectionLink>
               <SectionLink to="./side-projects">業務外活動</SectionLink>
-              <SectionLink to="./education">学歴</SectionLink>
               <SectionLink to="./certificates">資格</SectionLink>
             </nav>
           </div>

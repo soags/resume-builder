@@ -1,5 +1,5 @@
 import prisma from '~/lib/prisma.server'
-import type { ResumeBasicsInput } from '~/validators/basics'
+import type { BasicsInput } from '~/validators/basics'
 
 export async function getResumesByUserId(userId: string) {
   return await prisma.resume.findMany({
@@ -14,7 +14,7 @@ export async function getResume(resumeId: string) {
 
 export async function updateResumeBasics(
   resumeId: string,
-  inputs: ResumeBasicsInput
+  inputs: BasicsInput
 ) {
   return await prisma.resume.update({
     where: { id: resumeId },

@@ -2,7 +2,7 @@ import { redirect } from 'react-router'
 import { Button } from '~/components/ui/button'
 import { Field } from '~/components/ui/field'
 import { parseFormData, useForm, validationError } from '@rvf/react-router'
-import { ResumeBasicsSchema } from '~/validators/basics'
+import { BasicsSchema } from '~/validators/basics'
 import { getResume, updateResumeBasics } from '~/models/resume.server'
 import type { Route } from './+types/basics'
 
@@ -16,7 +16,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export async function action({ params, request }: Route.ActionArgs) {
-  const result = await parseFormData(request, ResumeBasicsSchema)
+  const result = await parseFormData(request, BasicsSchema)
   if (result.error) {
     return validationError(result.error, result.submittedData)
   }
@@ -26,7 +26,7 @@ export async function action({ params, request }: Route.ActionArgs) {
   return redirect(`/resumes`)
 }
 
-export default function BasicsForm({ loaderData }: Route.ComponentProps) {
+export default function Basics({ loaderData }: Route.ComponentProps) {
   const resume = loaderData ?? {
     title: '',
     name: '',
@@ -39,7 +39,7 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
   }
   const form = useForm({
     method: 'post',
-    schema: ResumeBasicsSchema,
+    schema: BasicsSchema,
     defaultValues: {
       title: resume.title,
       name: resume.name,
