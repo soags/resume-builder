@@ -2,7 +2,7 @@ import { redirect } from 'react-router'
 import { Button } from '~/components/ui/button'
 import { Field } from '~/components/ui/field'
 import { parseFormData, useForm, validationError } from '@rvf/react-router'
-import { BasicsSchema } from '~/validators/basics'
+import { basicsSchema } from '~/validators/basics'
 import { getResume, updateResumeBasics } from '~/models/resume.server'
 import type { Route } from './+types/basics'
 
@@ -16,7 +16,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export async function action({ params, request }: Route.ActionArgs) {
-  const result = await parseFormData(request, BasicsSchema)
+  const result = await parseFormData(request, basicsSchema)
   if (result.error) {
     return validationError(result.error, result.submittedData)
   }
@@ -27,29 +27,10 @@ export async function action({ params, request }: Route.ActionArgs) {
 }
 
 export default function Basics({ loaderData }: Route.ComponentProps) {
-  const resume = loaderData ?? {
-    title: '',
-    name: '',
-    label: '',
-    github: '',
-    qiita: '',
-    zenn: '',
-    speakerDeck: '',
-    slideShare: '',
-  }
   const form = useForm({
     method: 'post',
-    schema: BasicsSchema,
-    defaultValues: {
-      title: resume.title,
-      name: resume.name,
-      label: resume.label,
-      github: resume.github,
-      qiita: resume.qiita,
-      zenn: resume.zenn,
-      speakerDeck: resume.speakerDeck,
-      slideShare: resume.slideShare,
-    },
+    schema: basicsSchema,
+    defaultValues: loaderData,
   })
 
   return (

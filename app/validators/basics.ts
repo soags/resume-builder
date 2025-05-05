@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const BasicsSchema = z.object({
+export const basicsSchema = z.object({
   title: z.string().min(1).max(50),
   name: z.string().min(1).max(50),
   label: z.string().max(50),
@@ -11,4 +11,4 @@ export const BasicsSchema = z.object({
   slideShare: z.string().url(),
 })
 
-export type BasicsInput = z.infer<typeof BasicsSchema>
+export type BasicsInput = z.infer<typeof basicsSchema>
