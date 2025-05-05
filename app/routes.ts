@@ -15,5 +15,13 @@ export default [
       route('callback', './auth/google-callback.tsx'),
     ]),
   ]),
-  layout('./layout.tsx', [route('resumes', './resumes/resumes.tsx')]),
+  layout('./layout.tsx', [
+    ...prefix('resumes', [
+      index('./resumes/resumes.tsx'),
+      route('edit/:resumeId', './resumes/edit/layout.tsx', [
+        index('./resumes/edit/index.tsx'),
+        route('basics', './resumes/edit/basics.tsx'),
+      ]),
+    ]),
+  ]),
 ] satisfies RouteConfig

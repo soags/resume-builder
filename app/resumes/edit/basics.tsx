@@ -1,42 +1,42 @@
 import { redirect } from 'react-router'
 import { Button } from '~/components/ui/button'
-import { getResumeByUserId, upsertResume } from '~/models/resume.server'
 import { Field } from '~/components/ui/field'
 import { parseFormData, useForm, validationError } from '@rvf/react-router'
-import { basicsSchema } from '~/validators/basics'
-import type { Route } from './+types/_.editor.basics'
+import { ResumeBasicsSchema } from '~/validators/basics'
+import { getResume, updateResumeBasics } from '~/models/resume.server'
+import type { Route } from './+types/basics'
 
-export async function loader() {
-  const userId = ''
-  const resume = await getResumeByUserId(userId)
+export async function loader({ params }: Route.LoaderArgs) {
+  const resume = await getResume(params.resumeId)
+  if (!resume) {
+    throw new Response('Not Found', { status: 404 })
+  }
+
   return resume
 }
 
-export async function action({ request }: Route.ActionArgs) {
-  const result = await parseFormData(request, basicsSchema)
-
+export async function action({ params, request }: Route.ActionArgs) {
+  const result = await parseFormData(request, ResumeBasicsSchema)
   if (result.error) {
     return validationError(result.error, result.submittedData)
   }
 
-  const { name, label } = result.data
+  await updateResumeBasics(params.resumeId, result.data)
 
-  const userId = ''
-
-  await upsertResume(userId, name, label)
-
-  return redirect('/editor/basics')
+  return redirect(`/resumes`)
 }
 
 export default function BasicsForm({ loaderData }: Route.ComponentProps) {
   const resume = loaderData ?? {
+    title: '',
     name: '',
     label: '',
   }
   const form = useForm({
     method: 'post',
-    schema: basicsSchema,
+    schema: ResumeBasicsSchema,
     defaultValues: {
+      title: resume.title,
       name: resume.name,
       label: resume.label,
     },
@@ -48,6 +48,7 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
       className="w-3xl rounded-lg border border-slate-300 p-8"
     >
       <div className="flex flex-col gap-4">
+        <Field label="職務経歴書タイトル" scope={form.scope('title')} />
         <Field label="名前" scope={form.scope('name')} />
         <Field label="職種" scope={form.scope('label')} />
 

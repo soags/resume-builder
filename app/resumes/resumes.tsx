@@ -4,6 +4,7 @@ import { getSessionUser } from '~/services/auth.server'
 import { formatDate } from '~/lib/date'
 import { CalendarIcon, EditIcon } from 'lucide-react'
 import { Button } from '~/components/ui/button'
+import { Link } from 'react-router'
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await getSessionUser(request)
@@ -29,8 +30,10 @@ export default function Resumes({ loaderData: resumes }: Route.ComponentProps) {
               className="flex items-center border-b px-4 py-6 last:border-b-0"
             >
               <div className="flex flex-1 items-center gap-4">
-                <Button variant="outline" size="icon">
-                  <EditIcon />
+                <Button asChild variant="outline" size="icon">
+                  <Link to={`edit/${resume.id}`}>
+                    <EditIcon />
+                  </Link>
                 </Button>
                 <div className="font-medium">{resume.title}</div>
               </div>
