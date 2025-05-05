@@ -58,14 +58,52 @@ export default function BasicsForm({ loaderData }: Route.ComponentProps) {
       className="w-3xl rounded-lg border border-slate-300 p-8"
     >
       <div className="flex flex-col gap-4">
-        <Field label="職務経歴書タイトル" scope={form.scope('title')} />
-        <Field label="名前" scope={form.scope('name')} />
-        <Field label="職種" scope={form.scope('label')} />
-        <Field label="GitHub" scope={form.scope('github')} />
-        <Field label="Qiita" scope={form.scope('qiita')} />
-        <Field label="Zenn" scope={form.scope('zenn')} />
-        <Field label="SpeakerDeck" scope={form.scope('speakerDeck')} />
-        <Field label="SlideShare" scope={form.scope('slideShare')} />
+        <Field
+          label="職務経歴書タイトル"
+          scope={form.scope('title')}
+          placeholder="職務経歴書"
+          description="※ 管理用のタイトルです。職務経歴書には表示されません。"
+        />
+        <Field
+          label="名前"
+          scope={form.scope('name')}
+          placeholder="曽我 周平"
+        />
+        <Field
+          label="職種"
+          scope={form.scope('label')}
+          placeholder="フルスタックエンジニア"
+        />
+        <Field
+          label="GitHub URL"
+          type="url"
+          scope={form.scope('github')}
+          placeholder="https://github.com/..."
+        />
+        <Field
+          label="Qiita URL"
+          type="url"
+          scope={form.scope('qiita')}
+          placeholder="https://qiita.com/..."
+        />
+        <Field
+          label="Zenn URL"
+          type="url"
+          scope={form.scope('zenn')}
+          placeholder="https://zenn.dev/..."
+        />
+        <Field
+          label="Speaker Deck URL"
+          type="url"
+          scope={form.scope('speakerDeck')}
+          placeholder="https://speakerdeck.com/..."
+        />
+        <Field
+          label="SlideShare URL"
+          type="url"
+          scope={form.scope('slideShare')}
+          placeholder="https://www.slideshare.net/..."
+        />
 
         <div className="mt-6 flex gap-8">
           <Button type="submit" className="flex-1 bg-sky-800 hover:bg-sky-950">

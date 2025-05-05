@@ -9,18 +9,15 @@ import { forwardRef, useId, type ComponentPropsWithRef } from 'react'
 
 type BaseInputProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
 
-type FieldProps<Type extends string> = {
+type FieldProps<Type extends string> = BaseInputProps & {
   label: string
   type?: Type
   scope: FormScope<ValueOfInputType<Type>>
-} & BaseInputProps
+  description?: string
+}
 
-type InputType = <Type extends string>(
-  props: FieldProps<Type>
-) => React.ReactNode
-
-const FieldImpl = forwardRef<HTMLInputElement, FieldProps<string>>(
-  ({ label, type, scope, ...rest }, ref) => {
+const Field = forwardRef<HTMLInputElement, FieldProps<string>>(
+  ({ label, scope, type, description, ...rest }, ref) => {
     const field = useField(scope)
     const inputId = useId()
     const errorId = useId()
@@ -38,8 +35,14 @@ const FieldImpl = forwardRef<HTMLInputElement, FieldProps<string>>(
             ...rest,
           })}
         />
+        {description && (
+          <p className="text-muted-foreground text-[0.8rem]">{description}</p>
+        )}
         {field.error() && (
-          <p id={errorId} className="text-red-500">
+          <p
+            id={errorId}
+            className="text-destructive text-[0.8rem] font-medium"
+          >
             {field.error()}
           </p>
         )}
@@ -48,6 +51,6 @@ const FieldImpl = forwardRef<HTMLInputElement, FieldProps<string>>(
   }
 )
 
-FieldImpl.displayName = 'Field'
+Field.displayName = 'Field'
 
-export const Field = FieldImpl as InputType
+export { Field }
