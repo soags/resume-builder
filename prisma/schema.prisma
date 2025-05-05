@@ -42,14 +42,30 @@ model Resume {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user   User    @relation(fields: [userId], references: [id])
-  skills Skill[]
+  user           User            @relation(fields: [userId], references: [id])
+  skills         Skill[]
+  certifications Certification[]
 }
 
 model Skill {
   id        String   @id @default(uuid())
   resumeId  String
   text      String   @default("")
+  orderNo   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id])
+}
+
+model Certification {
+  id        String   @id @default(uuid())
+  resumeId  String
+  name      String
+  date      DateTime
+  dateType  String
+  issuer    String
+  url       String
   orderNo   Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

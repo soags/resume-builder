@@ -90,6 +90,9 @@ export default function Skill({ loaderData }: Route.ComponentProps) {
       {...form.getFormProps()}
       className="w-3xl rounded-lg border border-slate-300 p-8"
     >
+      <header className="mb-8">
+        <h2 className="text-2xl font-bold">スキル</h2>
+      </header>
       <DndContext
         id={dndId}
         collisionDetection={closestCenter}

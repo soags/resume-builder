@@ -22,6 +22,7 @@ export default [
         index('./resumes/edit/index.tsx'),
         route('basics', './resumes/edit/basics.tsx'),
         route('skill', './resumes/edit/skill/skill.tsx'),
+        route('certificates', './resumes/edit/certificates/certificates.tsx'),
       ]),
     ]),
   ]),

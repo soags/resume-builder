@@ -38,6 +38,9 @@ export default function Basics({ loaderData }: Route.ComponentProps) {
       {...form.getFormProps()}
       className="w-3xl rounded-lg border border-slate-300 p-8"
     >
+      <header className="mb-8">
+        <h2 className="text-2xl font-bold">基本情報</h2>
+      </header>
       <div className="flex flex-col gap-4">
         <Field
           label="職務経歴書タイトル"
