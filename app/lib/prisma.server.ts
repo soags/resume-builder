@@ -1,20 +1,13 @@
-import { PrismaClient } from '@prisma/client'
-
-let prisma: PrismaClient
+import { PrismaClient } from '~/generated/prisma'
 
 declare global {
-  // allow global `var` declarations
+  // avoid multiple instances when hot reloading
   // eslint-disable-next-line no-var
-  var __db: PrismaClient | undefined
+  var prismaClient: PrismaClient
 }
 
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient()
-} else {
-  if (!global.__db) {
-    global.__db = new PrismaClient()
-  }
-  prisma = global.__db
-}
+globalThis.prismaClient ??= new PrismaClient()
 
-export { prisma }
+const prisma = globalThis.prismaClient
+
+export default prisma

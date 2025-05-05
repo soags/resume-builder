@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma.server'
+import prisma from '~/lib/prisma.server'
 
 export async function getResumeByUserId(userId: string) {
   return prisma.resume.findFirst({ where: { userId } })

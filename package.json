@@ -9,6 +9,9 @@
     "typecheck": "react-router typegen && tsc",
     "postgres": "docker run --name resume-postgres -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "@radix-ui/react-label": "^2.1.4",
@@ -22,7 +25,6 @@
     "isbot": "^5.1.27",
     "lucide-react": "^0.507.0",
     "next-themes": "^0.4.6",
-    "prisma": "^6.7.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.5.3",
@@ -45,7 +47,9 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "prisma": "^6.7.0",
     "tailwindcss": "^4.1.4",
+    "tsx": "^4.19.4",
     "tw-animate-css": "^1.2.9",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.1",

@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma.server'
+import prisma from '~/lib/prisma.server'
 
 export async function getUserByGoogleId(googleId: string) {
   return prisma.user.findFirst({

@@ -6,5 +6,10 @@
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "search.exclude": {
+    ".react-router": true,
+    "app/generated": true,
+    "prisma/migrations": true
   }
 }
