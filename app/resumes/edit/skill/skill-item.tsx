@@ -65,7 +65,7 @@ export function SkillItem({
     ) : null
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-3">
+    <div className="grid w-full items-center gap-3">
       <div className="flex items-center gap-2">
         <DragHandle />
 
