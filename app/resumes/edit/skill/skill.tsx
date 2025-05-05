@@ -12,6 +12,8 @@ import { Button } from '~/components/ui/button'
 import { SortableSkillItem } from './sortable-skill-item'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { closestCenter, DndContext, type DragEndEvent } from '@dnd-kit/core'
+import { redirect } from 'react-router'
+import { useId } from 'react'
 
 const schema = z.object({
   skills: z.array(
@@ -44,7 +46,7 @@ export async function action({ params, request }: Route.ActionArgs) {
 
   await updateSkills(params.resumeId, skills)
 
-  return {}
+  return redirect(`/resumes`)
 }
 
 export default function Skill({ loaderData }: Route.ComponentProps) {
@@ -58,6 +60,8 @@ export default function Skill({ loaderData }: Route.ComponentProps) {
   })
 
   const fields = useFieldArray(form.scope('skills'))
+
+  const dndId = useId()
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -86,7 +90,11 @@ export default function Skill({ loaderData }: Route.ComponentProps) {
       {...form.getFormProps()}
       className="w-3xl rounded-lg border border-slate-300 p-8"
     >
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        id={dndId}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext
           items={fields.map((_, item) => item.value('id'))}
           strategy={verticalListSortingStrategy}
