@@ -7,13 +7,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="w-full p-4">
           <div className="rounded-lg border border-slate-300 p-2">
             <nav className="flex flex-col space-y-2">
-              <SectionLink to="./basics">基本情報</SectionLink>
-              <SectionLink to="./tech">技術スタック</SectionLink>
-              <SectionLink to="./skill">スキル</SectionLink>
-              <SectionLink to="./work">職務経歴</SectionLink>
-              <SectionLink to="./promotions">自己PR</SectionLink>
-              <SectionLink to="./projects">業務外活動</SectionLink>
-              <SectionLink to="./certs">資格</SectionLink>
+              <SectionLink href="./basics">基本情報</SectionLink>
+              <SectionLink href="./tech">技術スタック</SectionLink>
+              <SectionLink href="./skill">スキル</SectionLink>
+              <SectionLink href="./work">職務経歴</SectionLink>
+              <SectionLink href="./promotions">自己PR</SectionLink>
+              <SectionLink href="./projects">業務外活動</SectionLink>
+              <SectionLink href="./certs">資格</SectionLink>
             </nav>
           </div>
         </div>

@@ -3,8 +3,8 @@
 import prisma from "@/lib/prisma";
 import { ResumeFormData } from "../schema/resumeSchema";
 
-export async function getResumeById(resumeId: string) {
-  return await prisma.resume.findUnique({ where: { id: resumeId } });
+export async function getResumeById(id: string) {
+  return await prisma.resume.findUnique({ where: { id } });
 }
 
 export async function getResumesByUser(userId: string) {
