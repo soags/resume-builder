@@ -8,7 +8,7 @@ import {
   updateHighlight,
 } from "../actions";
 import { Highlight } from "@/generated/prisma/client";
-import { GripVerticalIcon, Trash2Icon } from "lucide-react";
+import { GripVerticalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { Input } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useDebouncedCallback } from "use-debounce";
@@ -123,8 +123,9 @@ export function HighlightList({
       </div>
 
       {/* 追加ボタン */}
-      <div className="flex items-center gap-x-2">
+      <div className="mt-4 flex items-center gap-x-2">
         <Button variant="outline" onClick={handleAdd}>
+          <PlusIcon className="h-4 w-4" />
           追加
         </Button>
       </div>
