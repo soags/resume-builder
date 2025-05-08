@@ -1,22 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
+import { getResumesByUser } from "@/features/resumes/models/resumes";
+import { formatDate, TEST_USER_ID } from "@/lib/utils";
 import { CalendarIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
 
-const resumes = [
-  {
-    id: "1",
-    title: "職務経歴書1",
-    updatedAt: new Date("2023-10-01T12:00:00Z"),
-  },
-  {
-    id: "2",
-    title: "職務経歴書2",
-    updatedAt: new Date("2023-10-02T12:00:00Z"),
-  },
-];
+export default async function Resumes() {
+  const resumes = await getResumesByUser(TEST_USER_ID);
 
-export default function Resumes() {
   return (
     <div className="flex justify-center p-6">
       <div className="w-full max-w-3xl">

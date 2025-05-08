@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx";
 import { format, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
+export const TEST_USER_ID = "9411d191-3384-49fd-b61b-88213fa7a010";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
