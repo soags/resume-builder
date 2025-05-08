@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <nav className="flex flex-col space-y-2">
               <SectionLink href="./basics">基本情報</SectionLink>
               <SectionLink href="./tech">技術スタック</SectionLink>
-              <SectionLink href="./skill">スキル</SectionLink>
+              <SectionLink href="./skills">スキル</SectionLink>
               <SectionLink href="./work">職務経歴</SectionLink>
               <SectionLink href="./promotions">自己PR</SectionLink>
               <SectionLink href="./projects">業務外活動</SectionLink>

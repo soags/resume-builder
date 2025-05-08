@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { format, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
-export const TEST_USER_ID = "9411d191-3384-49fd-b61b-88213fa7a010";
+export const TEST_USER_ID = "d31bdadd-165d-46f9-ba8c-dc45c83a13d4";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
