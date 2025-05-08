@@ -1,11 +1,19 @@
 import { Button } from "@/components/ui/button/button";
 import { getResumesByUser } from "@/features/resumes/models/resumes";
-import { formatDate, TEST_USER_ID } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { CalendarIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
+import { NewResumeButton } from "./_components/NewResumeButton";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function ResumesPage() {
-  const resumes = await getResumesByUser(TEST_USER_ID);
+  const session = await auth();
+  if (!session?.user) {
+    return redirect("/");
+  }
+
+  const resumes = await getResumesByUser(session.user.id!);
 
   return (
     <div className="flex justify-center p-6">
@@ -34,6 +42,7 @@ export default async function ResumesPage() {
             </div>
           ))}
         </div>
+        <NewResumeButton />
       </div>
     </div>
   );

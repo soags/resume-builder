@@ -12,7 +12,7 @@ import {
   Input,
 } from "@/components/ui/form";
 import { resumeSchema } from "@/features/resumes/schema/resumeSchema";
-import { Resume } from "@/generated/prisma";
+import { Resume } from "@/generated/prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,13 +26,17 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
   });
 
   const onSubmit = async (data: FormData) => {
-    await fetch(`./basics/api`, {
+    const response = await fetch(`/me/resumes/${resume.id}/basics/api`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
+    if (!response.ok) {
+      alert("保存に失敗しました。");
+      return;
+    }
     alert("保存しました。");
   };
 

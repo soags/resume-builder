@@ -14,6 +14,15 @@ export async function getResumesByUser(userId: string) {
   });
 }
 
+export async function createResume(userId: string) {
+  return await prisma.resume.create({
+    data: {
+      userId,
+      title: "職務経歴書",
+    },
+  });
+}
+
 export async function updateResumeBasics(
   resumeId: string,
   data: ResumeFormData,

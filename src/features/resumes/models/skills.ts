@@ -1,9 +1,8 @@
 "use server";
 
-import { Skill } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 
-export async function getSkillsByResume(resumeId: string): Promise<Skill[]> {
+export async function getSkillsByResume(resumeId: string) {
   return await prisma.skill.findMany({
     where: { resumeId },
     orderBy: { orderNo: "asc" },
