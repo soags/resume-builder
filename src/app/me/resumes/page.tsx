@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { getResumesByUser } from "@/features/resumes/models/resumes";
 import { formatDate, TEST_USER_ID } from "@/lib/utils";
 import { CalendarIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
 
-export default async function Resumes() {
+export default async function ResumesPage() {
   const resumes = await getResumesByUser(TEST_USER_ID);
 
   return (
@@ -21,7 +21,7 @@ export default async function Resumes() {
             >
               <div className="flex flex-1 items-center gap-4">
                 <Button asChild variant="outline" size="icon">
-                  <Link href={`${resume.id}/edit/basics`}>
+                  <Link href={`./resumes/${resume.id}/edit/basics`}>
                     <EditIcon />
                   </Link>
                 </Button>

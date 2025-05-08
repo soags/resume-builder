@@ -1,3 +1,5 @@
+"use server";
+
 import prisma from "@/lib/prisma";
 import { ResumeFormData } from "../schema/resumeSchema";
 
