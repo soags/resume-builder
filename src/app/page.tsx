@@ -1,9 +1,9 @@
-import Link from "next/link";
+import SignIn from "./_components/SignIn";
 
 export default function Home() {
   return (
     <div>
-      <Link href="/me/resumes">ログイン</Link>
+      <SignIn />
     </div>
   );
 }
