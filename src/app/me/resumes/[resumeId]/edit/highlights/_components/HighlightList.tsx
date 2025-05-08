@@ -1,17 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import {
   getHighlights,
   addHighlight,
   deleteHighlight,
   updateHighlight,
+  updateHighlightOrder,
 } from "../actions";
 import { Highlight } from "@/generated/prisma/client";
-import { GripVerticalIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { Input } from "@/components/ui/form";
+import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDebouncedCallback } from "use-debounce";
+import { SortableHighlightForm } from "./SortableHighlightForm";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 
 export function HighlightList({
   resumeId,
@@ -21,6 +28,7 @@ export function HighlightList({
   initial: Highlight[];
 }) {
   const [highlights, setHighlights] = useState(initial);
+  const dndId = useId();
 
   useEffect(() => {
     const fetchHighlights = async () => {
@@ -66,7 +74,6 @@ export function HighlightList({
   const debouncedUpdate = useDebouncedCallback(
     async (id: string, text: string) => {
       try {
-        console.log("debouncedUpdate", id, text);
         await updateHighlight(id, text);
       } catch (error) {
         console.error(
@@ -89,40 +96,64 @@ export function HighlightList({
     debouncedUpdate(id, text);
   };
 
+  const updateOrder = async (newHighlights: Highlight[]) => {
+    try {
+      await updateHighlightOrder(
+        resumeId,
+        newHighlights.map((highlight) => highlight.id),
+      );
+    } catch (error) {
+      console.error(
+        `[HighlightList] Error updating highlight order with:`,
+        error,
+      );
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
+      return;
+    }
+    const oldIndex = highlights.findIndex(
+      (item) => item.id === (active.id as string),
+    );
+    const newIndex = highlights.findIndex(
+      (item) => item.id === (over.id as string),
+    );
+    const newHighlights = arrayMove(highlights, oldIndex, newIndex);
+
+    // Optimistic Update
+    setHighlights(newHighlights);
+
+    // Background Update
+    updateOrder(newHighlights);
+  };
+
   return (
     <div>
-      <div className="space-y-2">
-        {highlights.map((highlight) => (
-          <div key={highlight.id} className="flex items-center gap-x-2">
-            {/* ドラッグハンドル */}
-            <div className="hover:cursor-grab">
-              <GripVerticalIcon className="h-5 w-5" />
-            </div>
-
-            {/* テキスト */}
-            <Input
-              className="focus-visible:border-border flex-1 focus-visible:ring-0"
-              value={highlight.text ?? ""}
-              onChange={(e) => {
-                handleUpdate(highlight.id, e.target.value);
-              }}
-            />
-
-            {/* 削除ボタン */}
-            <Button
-              type="submit"
-              variant="link"
-              size="icon"
-              className="text-destructive"
-              onClick={() => handleDelete(highlight.id)}
-            >
-              <Trash2Icon />
-            </Button>
+      <DndContext
+        id={dndId}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={highlights.map((highlight) => highlight.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-2">
+            {highlights.map((highlight) => (
+              <SortableHighlightForm
+                key={highlight.id}
+                highlight={highlight}
+                onChange={handleUpdate}
+                onDelete={handleDelete}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+        </SortableContext>
+      </DndContext>
 
-      {/* 追加ボタン */}
       <div className="mt-4 flex items-center gap-x-2">
         <Button variant="outline" onClick={handleAdd}>
           <PlusIcon className="h-4 w-4" />
