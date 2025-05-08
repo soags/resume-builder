@@ -31,6 +31,7 @@ export function HighlightForm({
         className="focus-visible:border-border flex-1 focus-visible:ring-0"
         value={highlight.text ?? ""}
         onChange={(e) => onChange(highlight.id, e.target.value)}
+        maxLength={1000}
       />
 
       {/* 削除ボタン */}
