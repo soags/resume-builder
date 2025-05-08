@@ -21,8 +21,8 @@ export default async function Layout({
               <SectionLink href={`/me/resumes/${resumeId}/edit/tech`}>
                 技術スタック
               </SectionLink>
-              <SectionLink href={`/me/resumes/${resumeId}/edit/skills`}>
-                スキル
+              <SectionLink href={`/me/resumes/${resumeId}/edit/highlights`}>
+                ハイライト
               </SectionLink>
               <SectionLink href={`/me/resumes/${resumeId}/edit/work`}>
                 職務経歴

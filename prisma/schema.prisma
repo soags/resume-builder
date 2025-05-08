@@ -78,13 +78,13 @@ model Resume {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  skills Skill[]
-  certs  Cert[]
+  highlights Highlight[]
+  certs      Cert[]
 
   user User @relation(fields: [userId], references: [id])
 }
 
-model Skill {
+model Highlight {
   id       String @id @default(uuid())
   resumeId String
   text     String
