@@ -29,7 +29,7 @@ export default async function ResumesPage() {
             >
               <div className="flex flex-1 items-center gap-4">
                 <Button asChild variant="outline" size="icon">
-                  <Link href={`./resumes/${resume.id}/edit/basics`}>
+                  <Link href={`/me/resumes/${resume.id}/edit/basics`}>
                     <EditIcon />
                   </Link>
                 </Button>

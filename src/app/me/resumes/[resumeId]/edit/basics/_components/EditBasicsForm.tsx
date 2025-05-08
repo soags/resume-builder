@@ -26,7 +26,7 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
   });
 
   const onSubmit = async (data: FormData) => {
-    const response = await fetch(`/me/resumes/${resume.id}/basics/api`, {
+    const response = await fetch(`/me/resumes/${resume.id}/edit/basics/api`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
