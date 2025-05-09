@@ -1,4 +1,4 @@
-import { SectionLink } from "./_components/section-link";
+import { SectionLink } from "./_components/SectionLink";
 
 export default async function Layout({
   params,
@@ -39,7 +39,11 @@ export default async function Layout({
             </nav>
           </div>
         </div>
-        <div className="flex-1 p-4">{children}</div>
+        <div className="flex-1 p-4">
+          <div className="w-3xl rounded-lg border border-slate-300 p-8">
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   );

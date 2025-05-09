@@ -1,5 +1,6 @@
 import { getResumeById } from "@/features/resumes/models/resumes";
 import { EditBasicsForm } from "./_components/EditBasicsForm";
+import { Header } from "../_components/Header";
 
 export default async function BasicsPage({
   params,
@@ -14,5 +15,10 @@ export default async function BasicsPage({
     return <div>職務経歴書が存在しませんわ……😢</div>;
   }
 
-  return <EditBasicsForm resume={resume} />;
+  return (
+    <>
+      <Header title="基本情報" />
+      <EditBasicsForm resume={resume} />
+    </>
+  );
 }
