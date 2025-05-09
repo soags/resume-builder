@@ -28,6 +28,8 @@ export type NumberSelectProps = {
   items: NumberSelectItem[];
   placeholder?: string;
   allowDeselect?: boolean;
+  buttonClassName?: string;
+  popoverClassName?: string;
   onChange: (value: number | undefined) => void;
 };
 
@@ -36,6 +38,8 @@ export function NumberSelect({
   items,
   placeholder = "選択してください",
   allowDeselect = true,
+  buttonClassName,
+  popoverClassName,
   onChange,
 }: NumberSelectProps) {
   const [open, setOpen] = useState(false);
@@ -50,13 +54,13 @@ export function NumberSelect({
           role="combobox"
           aria-expanded={open}
           aria-label="数値を選択"
-          className="w-[200px] justify-between"
+          className={cn("w-[200px] justify-between", buttonClassName)}
         >
           {displayLabel ?? placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className={cn("w-[200px] p-0", popoverClassName)}>
         <Command>
           <CommandInput placeholder="検索…" />
           <CommandList>

@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const certSchema = z.object({
   name: z.string().min(1),
-  year: z.number().or(z.literal("")),
-  month: z.number().or(z.literal("")),
+  year: z.number().int().positive(),
+  month: z.number().int().positive(),
   issuer: z.string().or(z.literal("")),
   url: z.string().url().or(z.literal("")),
 });
