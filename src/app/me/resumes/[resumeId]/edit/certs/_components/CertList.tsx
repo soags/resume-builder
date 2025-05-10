@@ -4,7 +4,7 @@ import { Cert } from "@/generated/prisma/client";
 import { CertItem } from "./CertItem";
 import { NewCertForm } from "./NewCertForm";
 import { useEffect, useState } from "react";
-import { addCert, getCerts } from "../actions";
+import { addCert, deleteCert, getCerts } from "../actions";
 import { CertFormData } from "../schema";
 
 export function CertList({
@@ -22,7 +22,6 @@ export function CertList({
 
   const handleAdd = async (data: CertFormData) => {
     try {
-      console.log("Adding cert:", resumeId, data);
       await addCert(resumeId, data);
       setCerts(await getCerts(resumeId));
     } catch (error) {
@@ -33,10 +32,19 @@ export function CertList({
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteCert(id);
+      setCerts(await getCerts(resumeId));
+    } catch (error) {
+      console.error(`[CertList] Error deleting cert with id=${id}:`, error);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {certs.map((cert) => (
-        <CertItem key={cert.id} cert={cert} />
+        <CertItem key={cert.id} cert={cert} onDelete={handleDelete} />
       ))}
       <NewCertForm onSubmit={handleAdd} />
     </div>

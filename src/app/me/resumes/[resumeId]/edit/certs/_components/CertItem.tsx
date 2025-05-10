@@ -6,7 +6,12 @@ import { Cert } from "@/generated/prisma/client";
 import { formatMonthJp } from "@/lib/utils";
 import { Award, Building2, Calendar, Trash2 } from "lucide-react";
 
-export function CertItem({ cert }: { cert: Cert }) {
+type CertItemProps = {
+  cert: Cert;
+  onDelete: (id: string) => void;
+};
+
+export function CertItem({ cert, onDelete }: CertItemProps) {
   return (
     <Card className="p-0 transition-shadow hover:shadow-md">
       <CardContent className="p-4">
@@ -36,6 +41,7 @@ export function CertItem({ cert }: { cert: Cert }) {
               variant="ghost"
               size="icon"
               className="text-red-500 hover:bg-red-50 hover:text-red-700"
+              onClick={() => onDelete(cert.id)}
             >
               <Trash2 className="h-5 w-5" />
             </Button>
