@@ -18,9 +18,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  resumes  Resume[]
+  accounts              Account[]
+  sessions              Session[]
+  techCategoryTemplates TechCategoryTemplate[]
+  resumes               Resume[]
 }
 
 model Account {
@@ -78,11 +79,47 @@ model Resume {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  highlights Highlight[]
-  certs      Cert[]
-  promotions Promotion[]
+  user         User           @relation(fields: [userId], references: [id])
+  techCategory TechCategory[]
+  highlights   Highlight[]
+  promotions   Promotion[]
+  certs        Cert[]
+}
 
-  user User @relation(fields: [userId], references: [id])
+model TechCategoryTemplate {
+  id     String @id @default(uuid())
+  userId String
+  name   String
+  order  Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TechCategory {
+  id       String      @id @default(uuid())
+  resumeId String
+  name     String
+  order    Int         @default(0)
+  stacks   TechStack[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+}
+
+model TechStack {
+  id         String @id @default(uuid())
+  categoryId String
+  name       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category TechCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model Highlight {
