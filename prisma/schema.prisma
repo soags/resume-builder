@@ -100,8 +100,8 @@ model Cert {
   id       String @id @default(uuid())
   resumeId String
   name     String
-  year     Int?
-  month    Int?
+  year     Int
+  month    Int
   issuer   String @default("")
   url      String @default("")
   orderNo  Int    @default(0)

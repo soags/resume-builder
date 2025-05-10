@@ -12,9 +12,14 @@ import { useMemo } from "react";
 type FormYearInputProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-> = Omit<ControllerProps<TFieldValues, TName>, "render">;
+> = Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  onChange?: (value: number | undefined) => void;
+  onBlur?: () => void;
+};
 
 export function FormYearInput<TFieldValues extends FieldValues>({
+  onChange,
+  onBlur,
   ...props
 }: FormYearInputProps<TFieldValues>) {
   const items = useMemo(() => {
@@ -28,7 +33,9 @@ export function FormYearInput<TFieldValues extends FieldValues>({
     <div className="flex items-center gap-x-2">
       <Controller
         {...props}
-        render={({ field: { onChange, value } }) => (
+        render={({
+          field: { value, onChange: onChangeField, onBlur: onBlurField },
+        }) => (
           <NumberSelect
             value={value}
             items={items}
@@ -36,7 +43,10 @@ export function FormYearInput<TFieldValues extends FieldValues>({
             buttonClassName="w-auto"
             popoverClassName="w-[200px]"
             onChange={(year) => {
-              onChange(year);
+              onChange?.(year);
+              onChangeField(year);
+              onBlur?.();
+              onBlurField();
             }}
           />
         )}
