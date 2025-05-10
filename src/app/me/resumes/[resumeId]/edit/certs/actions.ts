@@ -8,7 +8,7 @@ export async function getCerts(resumeId: string): Promise<Cert[]> {
   try {
     return prisma.cert.findMany({
       where: { resumeId },
-      orderBy: { orderNo: "asc" },
+      orderBy: { year: "desc", month: "desc" },
     });
   } catch (error) {
     console.error(
@@ -28,8 +28,8 @@ export async function addCert(
       data: {
         resumeId,
         name: data.name,
-        year: data.year ? Number(data.year) : null,
-        month: data.month ? Number(data.month) : null,
+        year: data.year,
+        month: data.month,
         issuer: data.issuer,
         url: data.url,
       },
@@ -49,8 +49,8 @@ export async function updateCert(
       where: { id },
       data: {
         name: data.name,
-        year: data.year ? Number(data.year) : null,
-        month: data.month ? Number(data.month) : null,
+        year: data.year,
+        month: data.month,
         issuer: data.issuer,
         url: data.url,
       },
@@ -58,28 +58,6 @@ export async function updateCert(
   } catch (error) {
     console.error("Error updating Cert:", error);
     throw new Error("Failed to update Cert");
-  }
-}
-
-export async function updateCertOrder(
-  resumeId: string,
-  order: string[],
-): Promise<void> {
-  try {
-    const updates = order.map((id, index) => {
-      return prisma.cert.update({
-        where: { id },
-        data: { orderNo: index + 1 },
-      });
-    });
-
-    await prisma.$transaction(updates);
-  } catch (error) {
-    console.error(
-      `[updateCertOrder] Error updating order for resumeId=${resumeId}:`,
-      error,
-    );
-    throw new Error("Failed to update Cert order");
   }
 }
 

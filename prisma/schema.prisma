@@ -104,7 +104,6 @@ model Cert {
   month    Int
   issuer   String @default("")
   url      String @default("")
-  orderNo  Int    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
