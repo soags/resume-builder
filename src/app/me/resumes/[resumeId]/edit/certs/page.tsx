@@ -14,7 +14,7 @@ export default async function CertsPage({
   return (
     <>
       <Header title="資格" />
-      <CertList defaultCerts={certs} />
+      <CertList resumeId={resumeId} defaultCerts={certs} />
     </>
   );
 }

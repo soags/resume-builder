@@ -13,10 +13,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { certSchema } from "../schema";
+import { CertFormData, certSchema } from "../schema";
 import { FormYearMonthField } from "@/components/FormYearMonthField";
 
-export function NewCertForm() {
+type NewCertFormProps = {
+  onSubmit: (data: CertFormData) => void;
+};
+
+export function NewCertForm({ onSubmit }: NewCertFormProps) {
   const form = useForm({
     resolver: zodResolver(certSchema),
     defaultValues: {
@@ -24,6 +28,7 @@ export function NewCertForm() {
       issuer: "",
       year: undefined,
       month: undefined,
+      url: "",
     },
   });
 
@@ -31,7 +36,7 @@ export function NewCertForm() {
     <Card className="p-0">
       <CardContent className="py-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(() => {})}>
+          <form onSubmit={form.handleSubmit((data) => onSubmit(data))}>
             <h2 className="mb-4 text-lg font-semibold">新しい資格の追加</h2>
             <div className="grid gap-4">
               <FormField
@@ -48,6 +53,17 @@ export function NewCertForm() {
                 )}
               />
 
+              <FormYearMonthField
+                label={
+                  <>
+                    取得年月 <span className="text-red-500">*</span>
+                  </>
+                }
+                control={form.control}
+                yearName="year"
+                monthName="month"
+              />
+
               <FormField
                 control={form.control}
                 name="issuer"
@@ -60,19 +76,23 @@ export function NewCertForm() {
                 )}
               />
 
-              <FormYearMonthField
-                label={
-                  <>
-                    取得年月 <span className="text-red-500">*</span>
-                  </>
-                }
+              <FormField
                 control={form.control}
-                yearName="year"
-                monthName="month"
+                name="url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL</FormLabel>
+                    <Input
+                      placeholder="認定証のURLなどを入力（任意）"
+                      {...field}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Button className="mt-2">
-                <PlusCircle className="mr-2 h-4 w-4" />
+                <PlusCircle type="submit" className="mr-2 h-4 w-4" />
                 追加する
               </Button>
             </div>
