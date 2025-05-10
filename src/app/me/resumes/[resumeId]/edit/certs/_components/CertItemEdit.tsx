@@ -10,7 +10,7 @@ import {
   Input,
 } from "@/components/ui/form";
 import { FormYearMonthField } from "@/components/FormYearMonthField";
-import { FocusEventHandler, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type CertItemEditProps = {
   defaultValues: CertFormData;
@@ -40,14 +40,31 @@ export function CertItemEdit({
     };
   };
 
-  const handleFormBlur: FocusEventHandler<HTMLFormElement> = (e) => {
-    const nextFocused = e.relatedTarget as HTMLElement | null;
-    const isStillInside = ref.current?.contains(nextFocused);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-    if (!isStillInside) {
-      onFinishEditing();
-    }
-  };
+    const onFocusOut = (e: FocusEvent) => {
+      setTimeout(() => {
+        const active = document.activeElement;
+
+        // 対象がフォーム内、またはポータル内かどうかを判定
+        const isStillInside =
+          el.contains(active) ||
+          // Combobox の popoverが open 中で、activeElement がそれに含まれている場合は true
+          !!document
+            .querySelector("[data-radix-popper-content-wrapper]")
+            ?.contains(active);
+
+        if (!isStillInside) {
+          onFinishEditing();
+        }
+      }, 500);
+    };
+
+    el.addEventListener("focusout", onFocusOut);
+    return () => el.removeEventListener("focusout", onFocusOut);
+  }, [onFinishEditing]);
 
   return (
     <Form {...form}>
@@ -56,7 +73,6 @@ export function CertItemEdit({
         tabIndex={0}
         className="space-y-4"
         onSubmit={form.handleSubmit(onSubmit)}
-        onBlur={handleFormBlur}
       >
         <div className="flex items-center">
           <Award className="text-muted-foreground mr-2 h-5 w-5" />
@@ -68,6 +84,7 @@ export function CertItemEdit({
                 <Input
                   placeholder="資格名を入力"
                   onBlur={handleBlur(onBlur)}
+                  autoFocus
                   {...field}
                 />
                 <FormMessage />

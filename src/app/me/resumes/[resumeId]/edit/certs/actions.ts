@@ -8,7 +8,7 @@ export async function getCerts(resumeId: string): Promise<Cert[]> {
   try {
     return prisma.cert.findMany({
       where: { resumeId },
-      orderBy: { year: "desc", month: "desc" },
+      orderBy: [{ year: "desc" }, { month: "desc" }],
     });
   } catch (error) {
     console.error(
