@@ -80,6 +80,7 @@ model Resume {
 
   highlights Highlight[]
   certs      Cert[]
+  promotions Promotion[]
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -104,6 +105,19 @@ model Cert {
   month    Int
   issuer   String @default("")
   url      String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id])
+}
+
+model Promotion {
+  id       String @id @default(uuid())
+  resumeId String
+  title    String @default("")
+  body     String @default("")
+  orderNo  Int    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
