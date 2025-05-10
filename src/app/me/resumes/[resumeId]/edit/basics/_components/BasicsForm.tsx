@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,49 +10,57 @@ import {
   FormMessage,
   Input,
 } from "@/components/ui/form";
-import { resumeSchema } from "@/features/resumes/schema/resumeSchema";
-import { Resume } from "@/generated/prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { BasicsFormData, basicsSchema } from "../schema";
+import { Resume } from "@/generated/prisma/client";
+import { useDebouncedCallback } from "use-debounce";
+import { updateBasics } from "../actions";
 
-type FormData = z.infer<typeof resumeSchema>;
+type BasicsFormProps = {
+  resume: Resume;
+};
 
-export function EditBasicsForm({ resume }: { resume: Resume }) {
-  const form = useForm<FormData>({
-    resolver: zodResolver(resumeSchema),
+export function BasicsForm({ resume }: BasicsFormProps) {
+  const form = useForm({
+    resolver: zodResolver(basicsSchema),
     defaultValues: resume,
   });
 
-  const onSubmit = async (data: FormData) => {
-    const response = await fetch(`/me/resumes/${resume.id}/edit/basics/api`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      alert("保存に失敗しました。");
-      return;
-    }
-    alert("保存しました。");
+  const handleBlur = (onBlur: () => void) => {
+    return () => {
+      onBlur();
+      autoSubmit();
+    };
   };
+
+  const handleSubmit = async (data: BasicsFormData) => {
+    try {
+      await updateBasics(resume.id, data);
+    } catch (error) {
+      console.error(`[Basics] Error updating basics:`, error);
+    }
+  };
+
+  const autoSubmit = useDebouncedCallback(() => {
+    form.handleSubmit(handleSubmit)();
+  }, 500);
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4">
         <FormField
           control={form.control}
           name="title"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>職務経歴書タイトル</FormLabel>
               <FormControl>
-                <Input placeholder="職務経歴書" {...field} />
+                <Input
+                  placeholder="職務経歴書"
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 ※ 管理用のタイトルです。職務経歴書には表示されません。
@@ -65,11 +72,15 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="name"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>名前</FormLabel>
               <FormControl>
-                <Input placeholder="曽我 周平" {...field} />
+                <Input
+                  placeholder="曽我 周平"
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,11 +89,15 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="label"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>職種</FormLabel>
               <FormControl>
-                <Input placeholder="フルスタックエンジニア" {...field} />
+                <Input
+                  placeholder="フルスタックエンジニア"
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -91,11 +106,15 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="github"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>GitHub URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://github.com/..." {...field} />
+                <Input
+                  placeholder="https://github.com/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,11 +123,15 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="qiita"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>Qiita URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://qiita.com/..." {...field} />
+                <Input
+                  placeholder="https://qiita.com/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,11 +140,15 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="zenn"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>Zenn URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://zenn.dev/..." {...field} />
+                <Input
+                  placeholder="https://zenn.dev/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -130,11 +157,15 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="speakerDeck"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>Speaker Deck URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://speakerdeck.com/..." {...field} />
+                <Input
+                  placeholder="https://speakerdeck.com/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -143,12 +174,13 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
         <FormField
           control={form.control}
           name="slideShare"
-          render={({ field }) => (
+          render={({ field: { onBlur, ...field } }) => (
             <FormItem>
               <FormLabel>SlideShare URL</FormLabel>
               <FormControl>
                 <Input
                   placeholder="https://www.slideshare.net/..."
+                  onBlur={handleBlur(onBlur)}
                   {...field}
                 />
               </FormControl>
@@ -156,15 +188,6 @@ export function EditBasicsForm({ resume }: { resume: Resume }) {
             </FormItem>
           )}
         />
-
-        <div className="mt-6 flex gap-8">
-          <Button type="submit" className="flex-1 bg-sky-800 hover:bg-sky-950">
-            保存
-          </Button>
-          <Button className="flex-1" variant="outline" type="reset">
-            元に戻す
-          </Button>
-        </div>
       </form>
     </Form>
   );

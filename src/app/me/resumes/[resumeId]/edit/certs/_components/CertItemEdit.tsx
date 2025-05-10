@@ -33,6 +33,13 @@ export function CertItemEdit({
     form.handleSubmit(onSubmit)();
   };
 
+  const handleBlur = (onBlur: () => void) => {
+    return () => {
+      onBlur();
+      autoSubmit();
+    };
+  };
+
   const handleFormBlur: FocusEventHandler<HTMLFormElement> = (e) => {
     const nextFocused = e.relatedTarget as HTMLElement | null;
     const isStillInside = ref.current?.contains(nextFocused);
@@ -60,10 +67,7 @@ export function CertItemEdit({
               <FormItem className="w-full">
                 <Input
                   placeholder="資格名を入力"
-                  onBlur={() => {
-                    onBlur();
-                    autoSubmit();
-                  }}
+                  onBlur={handleBlur(onBlur)}
                   {...field}
                 />
                 <FormMessage />
@@ -91,10 +95,7 @@ export function CertItemEdit({
               <FormItem className="w-full">
                 <Input
                   placeholder="発行団体名を入力（任意）"
-                  onBlur={() => {
-                    onBlur();
-                    autoSubmit();
-                  }}
+                  onBlur={handleBlur(onBlur)}
                   {...field}
                 />
                 <FormMessage />
@@ -111,10 +112,7 @@ export function CertItemEdit({
               <FormItem className="w-full">
                 <Input
                   placeholder="認定証のURLなどを入力（任意）"
-                  onBlur={() => {
-                    onBlur();
-                    autoSubmit();
-                  }}
+                  onBlur={handleBlur(onBlur)}
                   {...field}
                 />
                 <FormMessage />

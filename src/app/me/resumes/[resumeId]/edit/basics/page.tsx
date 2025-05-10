@@ -1,6 +1,6 @@
-import { getResumeById } from "@/features/resumes/models/resumes";
-import { EditBasicsForm } from "./_components/EditBasicsForm";
+import { BasicsForm } from "./_components/BasicsForm";
 import { Header } from "../_components/Header";
+import { getResume } from "./actions";
 
 export default async function BasicsPage({
   params,
@@ -9,8 +9,7 @@ export default async function BasicsPage({
 }) {
   const { resumeId } = await params;
 
-  const resume = await getResumeById(resumeId);
-
+  const resume = await getResume(resumeId);
   if (!resume) {
     return <div>職務経歴書が存在しませんわ……😢</div>;
   }
@@ -18,7 +17,7 @@ export default async function BasicsPage({
   return (
     <>
       <Header title="基本情報" />
-      <EditBasicsForm resume={resume} />
+      <BasicsForm resume={resume} />
     </>
   );
 }
