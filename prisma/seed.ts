@@ -60,9 +60,9 @@ async function main() {
             order: 1,
             stacks: {
               create: [
-                { name: "React" },
-                { name: "Next.js" },
-                { name: "Tailwind CSS" },
+                { name: "react", label: "React" },
+                { name: "next", label: "Next.js" },
+                { name: "tailwind", label: "Tailwind CSS" },
               ],
             },
           },
@@ -71,9 +71,9 @@ async function main() {
             order: 2,
             stacks: {
               create: [
-                { name: "ASP.NET Core" },
-                { name: "Laravel" },
-                { name: "Node.js" },
+                { name: "aspnetcore", label: "ASP.NET Core" },
+                { name: "laravel", label: "Laravel" },
+                { name: "node", label: "Node.js" },
               ],
             },
           },
@@ -82,9 +82,9 @@ async function main() {
             order: 3,
             stacks: {
               create: [
-                { name: "AWS Fargate" },
-                { name: "Docker" },
-                { name: "Windows Server" },
+                { name: "aws", label: "AWS" },
+                { name: "docker", label: "Docker" },
+                { name: "windowsserver", label: "Windows Server" },
               ],
             },
           },
