@@ -52,6 +52,43 @@ export async function savePromotion(resumeId: string, data: PromotionFormData) {
   }
 }
 
+export async function swapPromotionOrder(
+  resumeId: string,
+  sourceId: string,
+  targetId: string,
+) {
+  try {
+    const promotions = await prisma.promotion.findMany({
+      where: {
+        id: { in: [sourceId, targetId] },
+        resumeId: resumeId,
+      },
+      select: { id: true, orderNo: true },
+    });
+
+    if (promotions.length !== 2) {
+      throw new Error("Failed to swap promotion order");
+    }
+
+    const [a, b] = promotions;
+    const ops = [
+      prisma.promotion.update({
+        where: { id: a.id },
+        data: { orderNo: b.orderNo },
+      }),
+      prisma.promotion.update({
+        where: { id: b.id },
+        data: { orderNo: a.orderNo },
+      }),
+    ];
+
+    await prisma.$transaction(ops);
+  } catch (error) {
+    console.error(`[deletePromotion] Error swaping promotion order:`, error);
+    throw new Error("Failed to swap promotion order");
+  }
+}
+
 export async function deletePromotion(id: string) {
   try {
     return await prisma.promotion.delete({

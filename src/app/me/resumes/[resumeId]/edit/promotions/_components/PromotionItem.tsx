@@ -4,17 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Promotion } from "@/generated/prisma/client";
 import DOMPurify from "dompurify";
-import { Trash2Icon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, Trash2Icon } from "lucide-react";
 
 export type PromotionItemProps = {
   promotion: Promotion;
+  enableMoveUp: boolean;
+  enableMoveDown: boolean;
   onStartEditing: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   onDelete: () => void;
 };
 
 export function PromotionItem({
   promotion,
+  enableMoveUp,
+  enableMoveDown,
   onStartEditing,
+  onMoveUp,
+  onMoveDown,
   onDelete,
 }: PromotionItemProps) {
   const sanitizedHtml = DOMPurify.sanitize(
@@ -49,6 +57,32 @@ export function PromotionItem({
             __html: sanitizedHtml,
           }}
         />
+        <div className="flex items-center justify-end gap-x-2">
+          {enableMoveUp && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveUp();
+              }}
+            >
+              <ArrowUpIcon />
+            </Button>
+          )}
+          {enableMoveDown && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveDown();
+              }}
+            >
+              <ArrowDownIcon />
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

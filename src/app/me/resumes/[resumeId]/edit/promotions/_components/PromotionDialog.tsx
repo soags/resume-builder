@@ -37,6 +37,7 @@ export function PromotionDialog({
   const form = useForm({
     resolver: zodResolver(promotionSchema),
     defaultValues: initialPromotion,
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -53,9 +54,9 @@ export function PromotionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:w-full sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>自己PRセクションの編集</DialogTitle>
+          <DialogTitle>自己PRの編集</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

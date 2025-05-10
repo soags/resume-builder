@@ -2,7 +2,12 @@
 
 import { Promotion } from "@/generated/prisma/client";
 import { useState } from "react";
-import { deletePromotion, getPromotions, savePromotion } from "../actions";
+import {
+  deletePromotion,
+  getPromotions,
+  savePromotion,
+  swapPromotionOrder,
+} from "../actions";
 import { PromotionFormData } from "../schema";
 import { PromotionDialog } from "./PromotionDialog";
 import { Button } from "@/components/ui/button";
@@ -24,43 +29,58 @@ export function PromotionList({
   initialPromotions: Promotion[];
 }) {
   const [promotions, setPromotions] = useState(initialPromotions);
-  const [editing, setEditing] = useState<Promotion | null>(null);
+  const [editing, setEditing] = useState<PromotionFormData | null>(null);
 
-  const reloadPromotions = async () => {
-    setPromotions((await getPromotions(resumeId)) ?? []);
-  };
-
-  const handleAdd = () => {
-    setEditing({ title: "", body: "" } as Promotion);
-  };
-
-  const handleSave = async (data: PromotionFormData) => {
+  const withReload = async (fn: () => Promise<void>) => {
     try {
-      await savePromotion(resumeId, data);
-      await reloadPromotions();
+      await fn();
+      setPromotions((await getPromotions(resumeId)) ?? []);
     } catch (error) {
-      console.error(`[PromotionList] Error updating promotion:`, error);
+      console.error("[PromotionList] Error occurred:", error);
     } finally {
       setEditing(null);
     }
   };
 
+  const handleAdd = () => {
+    setEditing({ title: "", body: "" } as PromotionFormData);
+  };
+
+  const handleSave = async (data: PromotionFormData) => {
+    withReload(async () => {
+      await savePromotion(resumeId, data);
+    });
+  };
+
   const handleDelete = async (id: string) => {
-    try {
+    withReload(async () => {
       await deletePromotion(id);
-      await reloadPromotions();
-    } catch (error) {
-      console.error(`[PromotionList] Error deleting promotion:`, error);
-    }
+    });
+  };
+
+  const moveOrder = async (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= promotions.length) return;
+
+    const source = promotions[index];
+    const target = promotions[targetIndex];
+
+    withReload(async () => {
+      await swapPromotionOrder(resumeId, source.id, target.id);
+    });
   };
 
   return (
     <div className="space-y-4">
-      {promotions.map((promotion) => (
+      {promotions.map((promotion, index) => (
         <PromotionItem
           key={promotion.id}
           promotion={promotion}
+          enableMoveUp={index > 0}
+          enableMoveDown={index < promotions.length - 1}
           onStartEditing={() => setEditing(promotion)}
+          onMoveUp={() => moveOrder(index, "up")}
+          onMoveDown={() => moveOrder(index, "down")}
           onDelete={() => handleDelete(promotion.id)}
         />
       ))}
