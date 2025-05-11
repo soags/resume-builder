@@ -26,3 +26,11 @@ export function toOption(value: string): Option {
 export function getSuggestions(): Option[] {
   return Object.keys(dict).map(toOption);
 }
+
+export function collation(options: Option): Option {
+  const normalized = normalize(options.value);
+  return {
+    value: normalized,
+    label: dict[normalized] || options.value,
+  };
+}

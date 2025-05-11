@@ -18,6 +18,10 @@ export async function getTechCategories(resumeId: string) {
 }
 
 export async function getTechStacks(categoryId: string) {
+  if (!categoryId) {
+    throw new Error("categoryId is required");
+  }
+
   return await prisma.techStack.findMany({
     where: { categoryId },
     orderBy: { order: "asc" },
@@ -28,16 +32,17 @@ export async function saveTechStacks(
   categoryId: string,
   stacks: TechStackFormData[],
 ) {
-  await prisma.techStack.deleteMany({
-    where: { categoryId },
-  });
-
-  return await prisma.techStack.createMany({
-    data: stacks.map((stack, index) => ({
-      categoryId,
-      name: stack.name,
-      label: stack.label,
-      order: index + 1,
-    })),
-  });
+  return await prisma.$transaction([
+    prisma.techStack.deleteMany({
+      where: { categoryId },
+    }),
+    prisma.techStack.createMany({
+      data: stacks.map((stack, index) => ({
+        categoryId,
+        name: stack.name,
+        label: stack.label,
+        order: index + 1,
+      })),
+    }),
+  ]);
 }

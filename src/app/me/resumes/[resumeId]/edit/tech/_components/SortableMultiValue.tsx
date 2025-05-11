@@ -53,6 +53,7 @@ export function SortableMultiValueLabel(
     innerProps: {
       ...props.innerProps,
       ...dragHandleProps,
+      "aria-label": "ドラッグして並び替え",
     },
   };
 

@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import dynamic from "next/dynamic";
-import { getSuggestions, Option, toOption } from "../utils";
+import { collation, getSuggestions, Option, toOption } from "../utils";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -23,16 +23,18 @@ type CategorySectionProps = {
   onCancel: () => void;
 };
 
-export default function CategorySectionEdit({
+export function CategorySectionEdit({
   initialStacks,
   onSubmit,
   onCancel,
 }: CategorySectionProps) {
   const [value, setValue] = useState<Option[]>(
-    initialStacks.map((stack) => ({
-      value: stack.name,
-      label: stack.label,
-    })),
+    initialStacks.map((stack) =>
+      collation({
+        value: stack.name,
+        label: stack.label,
+      }),
+    ),
   );
 
   const dndId = useId();
