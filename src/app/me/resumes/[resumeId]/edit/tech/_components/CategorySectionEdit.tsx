@@ -1,27 +1,39 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 import dynamic from "next/dynamic";
-import { getSuggestions, Option, toOption, toOptions } from "../utils";
+import { getSuggestions, Option, toOption } from "../utils";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableMultiValueContainer,
   SortableMultiValueLabel,
 } from "./SortableMultiValue";
+import { Button } from "@/components/ui/button";
+import { TechStack } from "@/generated/prisma/client";
+import { TechStackFormData } from "../schema";
 
 const CreatableSelect = dynamic(() => import("react-select/creatable"), {
   ssr: false,
 });
 
 type CategorySectionProps = {
-  initialStacks: string[];
+  initialStacks: TechStack[];
+  onSubmit: (data: TechStackFormData[]) => void;
+  onCancel: () => void;
 };
 
 export default function CategorySectionEdit({
   initialStacks,
+  onSubmit,
+  onCancel,
 }: CategorySectionProps) {
-  const [value, setValue] = useState<Option[]>(toOptions(initialStacks));
+  const [value, setValue] = useState<Option[]>(
+    initialStacks.map((stack) => ({
+      value: stack.name,
+      label: stack.label,
+    })),
+  );
 
   const dndId = useId();
 
@@ -35,32 +47,51 @@ export default function CategorySectionEdit({
     }
   };
 
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
+  const handleSubmit = () => {
+    onSubmit(
+      value.map((v) => ({
+        name: v.value,
+        label: v.label,
+      })),
+    );
+  };
 
   return (
-    <DndContext
-      id={dndId}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext items={value.map((v) => v.value)}>
-        <CreatableSelect
-          isMulti
-          value={value}
-          options={getSuggestions()}
-          getNewOptionData={(input) => toOption(input)}
-          onChange={(selected) => {
-            setValue(selected as Option[]);
-          }}
-          placeholder="技術スタックを追加"
-          components={{
-            MultiValueContainer: SortableMultiValueContainer,
-            MultiValueLabel: SortableMultiValueLabel,
-          }}
-        />
-      </SortableContext>
-    </DndContext>
+    <div className="grid gap-4">
+      <DndContext
+        id={dndId}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={value.map((v) => v.value)}>
+          <CreatableSelect
+            isMulti
+            value={value}
+            options={getSuggestions()}
+            getNewOptionData={(input) => toOption(input)}
+            onChange={(selected) => {
+              setValue(selected as Option[]);
+            }}
+            placeholder="技術スタックを追加"
+            components={{
+              MultiValueContainer: SortableMultiValueContainer,
+              MultiValueLabel: SortableMultiValueLabel,
+            }}
+          />
+        </SortableContext>
+      </DndContext>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          className="rounded-full"
+          onClick={() => onCancel()}
+        >
+          キャンセル
+        </Button>
+        <Button className="rounded-full" onClick={handleSubmit}>
+          確定する
+        </Button>
+      </div>
+    </div>
   );
 }

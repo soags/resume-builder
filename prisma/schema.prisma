@@ -99,16 +99,16 @@ model TechCategoryTemplate {
 }
 
 model TechCategory {
-  id       String      @id @default(uuid())
+  id       String @id @default(uuid())
   resumeId String
   name     String
-  order    Int         @default(0)
-  stacks   TechStack[]
+  order    Int    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume Resume      @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  stacks TechStack[]
 }
 
 model TechStack {
@@ -116,6 +116,7 @@ model TechStack {
   categoryId String
   name       String
   label      String
+  order      Int    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

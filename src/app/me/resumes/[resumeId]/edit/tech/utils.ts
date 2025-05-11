@@ -23,10 +23,6 @@ export function toOption(value: string): Option {
   };
 }
 
-export function toOptions(values: string[]): Option[] {
-  return values.map((value) => toOption(value));
-}
-
 export function getSuggestions(): Option[] {
-  return toOptions(Object.keys(dict));
+  return Object.keys(dict).map(toOption);
 }
