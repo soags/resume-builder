@@ -9,7 +9,10 @@ export function DeleteIconButton({ tooltip, onClick }: { tooltip: string; onClic
           <button
             className="rounded-md p-2 text-red-500 transition-colors hover:text-red-700"
             aria-label={tooltip}
-            onClick={onClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
           >
             <Trash2 className="h-4 w-4" />
           </button>

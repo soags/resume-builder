@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PromotionFormData, promotionSchema } from "../schema";
@@ -49,7 +49,10 @@ export function PromotionDialog({ open, initialPromotion, onSave, onClose }: Pro
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <Input placeholder="タイトルを入力" {...field} />
+                  <FormLabel>タイトル</FormLabel>
+                  <FormControl>
+                    <Input placeholder="タイトルを入力" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

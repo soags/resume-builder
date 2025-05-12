@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  ControllerProps,
-  FieldPath,
-  FieldValues,
-  useController,
-} from "react-hook-form";
+import { ControllerProps, FieldPath, FieldValues, useController } from "react-hook-form";
 import { FormMonthInput } from "./FormMonthInput";
 import { FormYearInput } from "./FormYearInput";
-import { Label } from "./ui/form";
 import { ReactNode } from "react";
+import { Label } from "./ui/label";
 
 type FormYearMonthFieldProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -20,10 +15,7 @@ type FormYearMonthFieldProps<
   control: ControllerProps<TFieldValues, TYearName>["control"];
   yearName: TYearName;
   monthName: TMonthName;
-  onChange?: (value: {
-    year: number | undefined;
-    month: number | undefined;
-  }) => void;
+  onChange?: (value: { year: number | undefined; month: number | undefined }) => void;
   onBlur?: () => void;
 };
 
@@ -50,21 +42,12 @@ export function FormYearMonthField<TFieldValues extends FieldValues>({
   return (
     <div>
       {label && (
-        <Label
-          data-slot="form-label"
-          data-error={!!error}
-          className="data-[error=true]:text-destructive mb-2"
-        >
+        <Label data-slot="form-label" data-error={!!error} className="data-[error=true]:text-destructive mb-2">
           {label}
         </Label>
       )}
       <div className="flex items-center gap-x-2">
-        <FormYearInput
-          control={control}
-          name={yearName}
-          onChange={() => onChange?.({ year, month })}
-          onBlur={onBlur}
-        />
+        <FormYearInput control={control} name={yearName} onChange={() => onChange?.({ year, month })} onBlur={onBlur} />
         <FormMonthInput
           control={control}
           name={monthName}

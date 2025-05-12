@@ -45,8 +45,8 @@ export default function TechCategoryCard({
 
   return (
     <div ref={setNodeRef} style={style}>
-      <Card className="grid gap-3 pt-4">
-        <CardHeader>
+      <Card className="grid gap-3">
+        <CardHeader className="px-4">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <DragHandle dragHandleProps={dragHandleProps} />
