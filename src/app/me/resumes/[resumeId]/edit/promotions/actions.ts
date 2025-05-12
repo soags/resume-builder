@@ -7,7 +7,7 @@ export async function getPromotions(resumeId: string) {
   try {
     return prisma.promotion.findMany({
       where: { resumeId },
-      orderBy: { orderNo: "asc" },
+      orderBy: { order: "asc" },
     });
   } catch (error) {
     console.error(
@@ -23,15 +23,15 @@ export async function savePromotion(resumeId: string, data: PromotionFormData) {
     const id = data.id;
 
     if (!id) {
-      const maxOrderNo = await prisma.promotion.aggregate({
-        _max: { orderNo: true },
+      const maxOrder = await prisma.promotion.aggregate({
+        _max: { order: true },
         where: { resumeId },
       });
 
       return await prisma.promotion.create({
         data: {
           resumeId: resumeId,
-          orderNo: (maxOrderNo._max.orderNo ?? 0) + 1,
+          order: (maxOrder._max.order ?? 0) + 1,
           ...data,
         },
       });
@@ -63,7 +63,7 @@ export async function swapPromotionOrder(
         id: { in: [sourceId, targetId] },
         resumeId: resumeId,
       },
-      select: { id: true, orderNo: true },
+      select: { id: true, order: true },
     });
 
     if (promotions.length !== 2) {
@@ -74,11 +74,11 @@ export async function swapPromotionOrder(
     const ops = [
       prisma.promotion.update({
         where: { id: a.id },
-        data: { orderNo: b.orderNo },
+        data: { order: b.order },
       }),
       prisma.promotion.update({
         where: { id: b.id },
-        data: { orderNo: a.orderNo },
+        data: { order: a.order },
       }),
     ];
 

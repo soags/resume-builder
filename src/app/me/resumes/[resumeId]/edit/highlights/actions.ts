@@ -7,7 +7,7 @@ export async function getHighlights(resumeId: string): Promise<Highlight[]> {
   try {
     return prisma.highlight.findMany({
       where: { resumeId },
-      orderBy: { orderNo: "asc" },
+      orderBy: { order: "asc" },
     });
   } catch (error) {
     console.error(
@@ -20,8 +20,8 @@ export async function getHighlights(resumeId: string): Promise<Highlight[]> {
 
 export async function addHighlight(resumeId: string): Promise<Highlight> {
   try {
-    const maxOrderNo = await prisma.highlight.aggregate({
-      _max: { orderNo: true },
+    const maxOrder = await prisma.highlight.aggregate({
+      _max: { order: true },
       where: { resumeId },
     });
 
@@ -29,7 +29,7 @@ export async function addHighlight(resumeId: string): Promise<Highlight> {
       data: {
         resumeId,
         text: "",
-        orderNo: (maxOrderNo._max.orderNo || 0) + 1,
+        order: (maxOrder._max.order || 0) + 1,
       },
     });
   } catch (error) {
@@ -61,7 +61,7 @@ export async function updateHighlightOrder(
     const updates = order.map((id, index) => {
       return prisma.highlight.update({
         where: { id },
-        data: { orderNo: index + 1 },
+        data: { order: index + 1 },
       });
     });
 
