@@ -2,15 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Award, Building2, Calendar, Link } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { CertFormData, certSchema } from "../schema";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormMessage,
-  Input,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { FormYearMonthField } from "@/components/FormYearMonthField";
 import { useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
 
 type CertItemEditProps = {
   defaultValues: CertFormData;
@@ -18,11 +13,7 @@ type CertItemEditProps = {
   onFinishEditing: () => void;
 };
 
-export function CertItemEdit({
-  defaultValues,
-  onSubmit,
-  onFinishEditing,
-}: CertItemEditProps) {
+export function CertItemEdit({ defaultValues, onSubmit, onFinishEditing }: CertItemEditProps) {
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm({
     resolver: zodResolver(certSchema),
@@ -44,7 +35,7 @@ export function CertItemEdit({
     const el = ref.current;
     if (!el) return;
 
-    const onFocusOut = (e: FocusEvent) => {
+    const onFocusOut = (_: FocusEvent) => {
       setTimeout(() => {
         const active = document.activeElement;
 
@@ -52,9 +43,7 @@ export function CertItemEdit({
         const isStillInside =
           el.contains(active) ||
           // Combobox の popoverが open 中で、activeElement がそれに含まれている場合は true
-          !!document
-            .querySelector("[data-radix-popper-content-wrapper]")
-            ?.contains(active);
+          !!document.querySelector("[data-radix-popper-content-wrapper]")?.contains(active);
 
         if (!isStillInside) {
           onFinishEditing();
@@ -68,12 +57,7 @@ export function CertItemEdit({
 
   return (
     <Form {...form}>
-      <form
-        ref={ref}
-        tabIndex={0}
-        className="space-y-4"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form ref={ref} tabIndex={0} className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex items-center">
           <Award className="text-muted-foreground mr-2 h-5 w-5" />
           <FormField
@@ -81,12 +65,7 @@ export function CertItemEdit({
             name="name"
             render={({ field: { onBlur, ...field } }) => (
               <FormItem className="w-full">
-                <Input
-                  placeholder="資格名を入力"
-                  onBlur={handleBlur(onBlur)}
-                  autoFocus
-                  {...field}
-                />
+                <Input placeholder="資格名を入力" onBlur={handleBlur(onBlur)} autoFocus {...field} />
                 <FormMessage />
               </FormItem>
             )}
@@ -110,11 +89,7 @@ export function CertItemEdit({
             name="issuer"
             render={({ field: { onBlur, ...field } }) => (
               <FormItem className="w-full">
-                <Input
-                  placeholder="発行団体名を入力（任意）"
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="発行団体名を入力（任意）" onBlur={handleBlur(onBlur)} {...field} />
                 <FormMessage />
               </FormItem>
             )}
@@ -127,11 +102,7 @@ export function CertItemEdit({
             name="url"
             render={({ field: { onBlur, ...field } }) => (
               <FormItem className="w-full">
-                <Input
-                  placeholder="認定証のURLなどを入力（任意）"
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="認定証のURLなどを入力（任意）" onBlur={handleBlur(onBlur)} {...field} />
                 <FormMessage />
               </FormItem>
             )}

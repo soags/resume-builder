@@ -1,21 +1,13 @@
 "use client";
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { BasicsFormData, basicsSchema } from "../schema";
 import { Resume } from "@/generated/prisma/client";
 import { useDebouncedCallback } from "use-debounce";
 import { updateBasics } from "../actions";
+import { Input } from "@/components/ui/input";
 
 type BasicsFormProps = {
   resume: Resume;
@@ -56,15 +48,9 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>職務経歴書タイトル</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="職務経歴書"
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="職務経歴書" onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
-              <FormDescription>
-                ※ 管理用のタイトルです。職務経歴書には表示されません。
-              </FormDescription>
+              <FormDescription>※ 管理用のタイトルです。職務経歴書には表示されません。</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -76,11 +62,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>名前</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="曽我 周平"
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="曽我 周平" onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,11 +75,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>職種</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="フルスタックエンジニア"
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="フルスタックエンジニア" onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -110,11 +88,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>GitHub URL</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="https://github.com/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="https://github.com/..." onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -127,11 +101,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>Qiita URL</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="https://qiita.com/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="https://qiita.com/..." onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,11 +114,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>Zenn URL</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="https://zenn.dev/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="https://zenn.dev/..." onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -161,11 +127,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>Speaker Deck URL</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="https://speakerdeck.com/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="https://speakerdeck.com/..." onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -178,11 +140,7 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>SlideShare URL</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="https://www.slideshare.net/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
+                <Input placeholder="https://www.slideshare.net/..." onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

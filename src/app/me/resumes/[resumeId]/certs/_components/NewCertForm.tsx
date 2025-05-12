@@ -1,20 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CertFormData, certSchema } from "../schema";
 import { FormYearMonthField } from "@/components/FormYearMonthField";
+import { Input } from "@/components/ui/input";
 
 type NewCertFormProps = {
   onSubmit: (data: CertFormData) => void;
@@ -82,10 +76,7 @@ export function NewCertForm({ onSubmit }: NewCertFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>URL</FormLabel>
-                    <Input
-                      placeholder="認定証のURLなどを入力（任意）"
-                      {...field}
-                    />
+                    <Input placeholder="認定証のURLなどを入力（任意）" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button/button";
+import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { CalendarIcon, EditIcon } from "lucide-react";
 import Link from "next/link";

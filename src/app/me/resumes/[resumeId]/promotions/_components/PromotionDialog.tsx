@@ -1,25 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormMessage,
-  Input,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PromotionFormData, promotionSchema } from "../schema";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useEffect } from "react";
+import { Input } from "@/components/ui/input";
 
 type PromotionFormProps = {
   open: boolean;
@@ -28,12 +17,7 @@ type PromotionFormProps = {
   onClose: () => void;
 };
 
-export function PromotionDialog({
-  open,
-  initialPromotion,
-  onSave,
-  onClose,
-}: PromotionFormProps) {
+export function PromotionDialog({ open, initialPromotion, onSave, onClose }: PromotionFormProps) {
   const form = useForm({
     resolver: zodResolver(promotionSchema),
     defaultValues: initialPromotion,
@@ -75,11 +59,7 @@ export function PromotionDialog({
               name="body"
               render={({ field }) => (
                 <FormItem>
-                  <Textarea
-                    placeholder="本文を入力"
-                    className="min-h-[150px] resize-y"
-                    {...field}
-                  />
+                  <Textarea placeholder="本文を入力" className="min-h-[150px] resize-y" {...field} />
                   <FormMessage />
                 </FormItem>
               )}

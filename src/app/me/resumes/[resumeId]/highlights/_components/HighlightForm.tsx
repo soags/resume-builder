@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Highlight } from "@/generated/prisma/client";
 import { GripVerticalIcon, Trash2Icon } from "lucide-react";
 import { ComponentPropsWithoutRef } from "react";
@@ -13,12 +13,7 @@ export type HighlightFormProps = {
   onDelete: (id: string) => void;
 };
 
-export function HighlightForm({
-  highlight,
-  dragHandleProps,
-  onChange,
-  onDelete,
-}: HighlightFormProps) {
+export function HighlightForm({ highlight, dragHandleProps, onChange, onDelete }: HighlightFormProps) {
   return (
     <div className="flex items-center gap-x-2">
       {/* ドラッグハンドル */}
