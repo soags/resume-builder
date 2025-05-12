@@ -22,13 +22,10 @@ export default async function ResumesPage() {
         </header>
         <div className="w-3xl rounded-lg border border-slate-300 bg-white px-4">
           {resumes.map((resume) => (
-            <div
-              key={resume.id}
-              className="flex items-center border-b px-4 py-6 last:border-b-0"
-            >
+            <div key={resume.id} className="flex items-center border-b px-4 py-6 last:border-b-0">
               <div className="flex flex-1 items-center gap-4">
                 <Button asChild variant="outline" size="icon">
-                  <Link href={`/me/resumes/${resume.id}/edit/basics`}>
+                  <Link href={`/me/resumes/${resume.id}/basics`}>
                     <EditIcon />
                   </Link>
                 </Button>
