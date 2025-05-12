@@ -15,13 +15,10 @@ const DragHandleContext = createContext<{
   listeners: undefined,
 });
 
-export function SortableMultiValueContainer(
-  props: MultiValueGenericProps<unknown>,
-) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: props.data.value,
-    });
+export function SortableMultiValueContainer(props: MultiValueGenericProps<unknown>) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: props.data.value,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -38,9 +35,7 @@ export function SortableMultiValueContainer(
   );
 }
 
-export function SortableMultiValueLabel(
-  props: MultiValueGenericProps<unknown>,
-) {
+export function SortableMultiValueLabel(props: MultiValueGenericProps<unknown>) {
   const { attributes, listeners } = useContext(DragHandleContext);
 
   const dragHandleProps = {

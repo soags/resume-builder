@@ -5,11 +5,19 @@ import { Button } from "./ui/button";
 
 export type EditableInputProps = {
   value: string;
+  editing: boolean;
+  placeholder?: string;
+  onEditingChange: (editing: boolean) => void;
   onSave: (value: string) => void;
 };
 
-export function EditableInput({ value: initialValue, onSave }: EditableInputProps) {
-  const [editing, setEditing] = useState(false);
+export function EditableInput({
+  value: initialValue,
+  editing,
+  placeholder,
+  onEditingChange,
+  onSave,
+}: EditableInputProps) {
   const [value, setValue] = useState(initialValue);
   const id = useId();
 
@@ -21,12 +29,12 @@ export function EditableInput({ value: initialValue, onSave }: EditableInputProp
 
   const handleSave = () => {
     onSave(value);
-    setEditing(false);
+    onEditingChange(false);
   };
 
   const handleCancel = () => {
     setValue(initialValue);
-    setEditing(false);
+    onEditingChange(false);
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -44,6 +52,7 @@ export function EditableInput({ value: initialValue, onSave }: EditableInputProp
         <>
           <Input
             value={value}
+            placeholder={placeholder}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -56,16 +65,16 @@ export function EditableInput({ value: initialValue, onSave }: EditableInputProp
             autoFocus
           />
           <Button id={`${id}-save`} variant="ghost" size="icon" onClick={handleSave}>
-            <Save className="h-4 w-4" />
+            <Save />
           </Button>
           <Button id={`${id}-cancel`} variant="ghost" size="icon" onClick={handleCancel}>
-            <X className="h-4 w-4" />
+            <X />
           </Button>
         </>
       ) : (
         <button
-          className="hover:bg-muted flex items-center gap-2 rounded px-2 py-1 text-lg font-medium"
-          onClick={() => setEditing(true)}
+          className="hover:bg-muted flex items-center gap-2 rounded px-2 py-1 leading-none font-semibold"
+          onClick={() => onEditingChange(true)}
         >
           {value}
           <Pencil className="text-muted-foreground h-4 w-4" />

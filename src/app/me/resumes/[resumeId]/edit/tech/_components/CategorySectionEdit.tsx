@@ -5,10 +5,7 @@ import dynamic from "next/dynamic";
 import { collation, getSuggestions, Option, toOption } from "../utils";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
-import {
-  SortableMultiValueContainer,
-  SortableMultiValueLabel,
-} from "./SortableMultiValue";
+import { SortableMultiValueContainer, SortableMultiValueLabel } from "./SortableMultiValue";
 import { Button } from "@/components/ui/button";
 import { TechStack } from "@/generated/prisma/client";
 import { TechStackFormData } from "../schema";
@@ -19,15 +16,11 @@ const CreatableSelect = dynamic(() => import("react-select/creatable"), {
 
 type CategorySectionProps = {
   initialStacks: TechStack[];
-  onSubmit: (data: TechStackFormData[]) => void;
+  onSave: (data: TechStackFormData[]) => void;
   onCancel: () => void;
 };
 
-export function CategorySectionEdit({
-  initialStacks,
-  onSubmit,
-  onCancel,
-}: CategorySectionProps) {
+export function CategorySectionEdit({ initialStacks, onSave, onCancel }: CategorySectionProps) {
   const [value, setValue] = useState<Option[]>(
     initialStacks.map((stack) =>
       collation({
@@ -49,8 +42,8 @@ export function CategorySectionEdit({
     }
   };
 
-  const handleSubmit = () => {
-    onSubmit(
+  const handleSave = () => {
+    onSave(
       value.map((v) => ({
         name: v.value,
         label: v.label,
@@ -60,11 +53,7 @@ export function CategorySectionEdit({
 
   return (
     <div className="grid gap-4">
-      <DndContext
-        id={dndId}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext id={dndId} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={value.map((v) => v.value)}>
           <CreatableSelect
             isMulti
@@ -83,14 +72,10 @@ export function CategorySectionEdit({
         </SortableContext>
       </DndContext>
       <div className="flex gap-2">
-        <Button
-          variant="outline"
-          className="rounded-full"
-          onClick={() => onCancel()}
-        >
+        <Button variant="outline" className="rounded-full" onClick={() => onCancel()}>
           キャンセル
         </Button>
-        <Button className="rounded-full" onClick={handleSubmit}>
+        <Button className="rounded-full" onClick={handleSave}>
           確定する
         </Button>
       </div>

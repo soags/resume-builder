@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { TechStackFormData } from "./schema";
+import { TechCategory } from "@/generated/prisma/client";
 
 export async function getTechCategories(resumeId: string) {
   return await prisma.techCategory.findMany({
@@ -17,22 +18,59 @@ export async function getTechCategories(resumeId: string) {
   });
 }
 
-export async function getTechStacks(categoryId: string) {
-  if (!categoryId) {
-    throw new Error("categoryId is required");
-  }
+export async function addCategory(resumeId: string) {
+  const maxOrder = await prisma.techCategory.aggregate({
+    where: { resumeId },
+    _max: {
+      order: true,
+    },
+  });
 
+  return await prisma.techCategory.create({
+    data: {
+      resumeId,
+      name: "",
+      order: (maxOrder._max.order ?? 0) + 1,
+    },
+    include: {
+      stacks: true,
+    },
+  });
+}
+
+export async function updateCategoryName(categoryId: string, name: string) {
+  await prisma.techCategory.update({
+    where: { id: categoryId },
+    data: { name },
+  });
+}
+
+export async function updateCategoryOrder(resumeId: string, order: TechCategory[]) {
+  const updates = order.map((category, index) =>
+    prisma.techCategory.update({
+      where: { id: category.id },
+      data: { order: index + 1 },
+    }),
+  );
+
+  await prisma.$transaction(updates);
+}
+
+export async function deleteCategory(categoryId: string) {
+  await prisma.techCategory.delete({
+    where: { id: categoryId },
+  });
+}
+
+export async function getTechStacks(categoryId: string) {
   return await prisma.techStack.findMany({
     where: { categoryId },
     orderBy: { order: "asc" },
   });
 }
 
-export async function saveTechStacks(
-  categoryId: string,
-  stacks: TechStackFormData[],
-) {
-  return await prisma.$transaction([
+export async function saveTechStacks(categoryId: string, stacks: TechStackFormData[]) {
+  await prisma.$transaction([
     prisma.techStack.deleteMany({
       where: { categoryId },
     }),
