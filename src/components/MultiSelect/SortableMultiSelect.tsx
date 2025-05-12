@@ -5,7 +5,23 @@ import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { createContext, useContext } from "react";
-import { components, MultiValueGenericProps } from "react-select";
+import { components, GroupBase, MultiValueGenericProps } from "react-select";
+import { MultiSelect, MultiSelectProps } from "./MultiSelect";
+import { MultiSelectOption } from "./types";
+
+type SortableMultiSelectProps = Omit<MultiSelectProps, "components">;
+
+export function SortableMultiSelect(props: SortableMultiSelectProps) {
+  return (
+    <MultiSelect
+      {...props}
+      components={{
+        MultiValueContainer,
+        MultiValueLabel,
+      }}
+    />
+  );
+}
 
 const DragHandleContext = createContext<{
   attributes: DraggableAttributes | undefined;
@@ -15,7 +31,7 @@ const DragHandleContext = createContext<{
   listeners: undefined,
 });
 
-export function SortableMultiValueContainer(props: MultiValueGenericProps<unknown>) {
+function MultiValueContainer(props: MultiValueGenericProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: props.data.value,
   });
@@ -23,11 +39,10 @@ export function SortableMultiValueContainer(props: MultiValueGenericProps<unknow
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    cursor: "move",
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={style} className="cursor-grab">
       <DragHandleContext.Provider value={{ attributes, listeners }}>
         <components.MultiValueContainer {...props} />
       </DragHandleContext.Provider>
@@ -35,7 +50,7 @@ export function SortableMultiValueContainer(props: MultiValueGenericProps<unknow
   );
 }
 
-export function SortableMultiValueLabel(props: MultiValueGenericProps<unknown>) {
+function MultiValueLabel(props: MultiValueGenericProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
   const { attributes, listeners } = useContext(DragHandleContext);
 
   const dragHandleProps = {

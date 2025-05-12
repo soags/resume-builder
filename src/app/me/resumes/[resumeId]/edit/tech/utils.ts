@@ -1,7 +1,4 @@
-export type Option = {
-  label: string;
-  value: string;
-};
+import { MultiSelectOption } from "@/components/MultiSelect";
 
 // TODO: 別ファイル or DBから取得する
 export const dict: Record<string, string> = {
@@ -21,7 +18,7 @@ export function normalize(input: string) {
     .toLowerCase();
 }
 
-export function collation(options: Option): Option {
+export function collation(options: MultiSelectOption): MultiSelectOption {
   const normalized = normalize(options.value);
   return {
     value: normalized,
@@ -29,7 +26,7 @@ export function collation(options: Option): Option {
   };
 }
 
-export function toOption(value: string): Option {
+export function toOption(value: string): MultiSelectOption {
   const normalized = normalize(value);
   return {
     value: normalized,
@@ -37,6 +34,6 @@ export function toOption(value: string): Option {
   };
 }
 
-export function getSuggestions(): Option[] {
+export function getSuggestions() {
   return Object.keys(dict).map(toOption);
 }

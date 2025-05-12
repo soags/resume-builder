@@ -1,23 +1,34 @@
 "use client";
 
 import { useId, useState } from "react";
-import { TechCategoryWithStacks } from "../schema";
-import CategorySection from "./CategorySection";
-import { addCategory, deleteCategory, updateCategoryName, updateCategoryOrder } from "../actions";
+import { TechCategoryWithStacks, TechStackFormData } from "../schema";
+import TechCategoryCard from "./TechCategoryCard";
+import {
+  addTechCategory,
+  deleteTechCategory,
+  saveTechStacks,
+  updateTechCategoryName,
+  updateTechCategoryOrder,
+} from "../actions";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-type TechStackListProps = {
+export type EditingState = {
+  categoryId: string;
+  mode: "name" | "stacks";
+} | null;
+
+export type TechStackListProps = {
   resumeId: string;
   initialCategories: TechCategoryWithStacks[];
 };
 
-export function TechCategoryList({ resumeId, initialCategories }: TechStackListProps) {
+export function TechCategoryListSection({ resumeId, initialCategories }: TechStackListProps) {
   const [categories, setCategories] = useState(initialCategories);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<EditingState>(null);
 
   const dndId = useId();
 
@@ -25,36 +36,49 @@ export function TechCategoryList({ resumeId, initialCategories }: TechStackListP
     try {
       let newCategory = categories.find((category) => category.name === "");
       if (!newCategory) {
-        newCategory = await addCategory(resumeId);
+        newCategory = await addTechCategory(resumeId);
         setCategories([...categories, newCategory]);
       }
-      setEditingId(newCategory.id);
+      setEditing({ categoryId: newCategory.id, mode: "name" });
     } catch (error) {
-      logger.handle(error, "TechStackList");
+      logger.handle(error, "TechCategoryListSection");
     }
   };
 
   const handleUpdateCategoryName = async (categoryId: string, name: string) => {
     try {
-      await updateCategoryName(categoryId, name);
+      await updateTechCategoryName(categoryId, name);
       const updatedCategories = categories.map((category) =>
         category.id === categoryId ? { ...category, name } : category,
       );
       setCategories(updatedCategories);
-      setEditingId(null);
+      setEditing(null);
     } catch (error) {
-      logger.handle(error, "TechStackList");
+      logger.handle(error, "TechCategoryListSection");
     }
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
     try {
-      await deleteCategory(categoryId);
+      await deleteTechCategory(categoryId);
       const updatedCategories = categories.filter((category) => category.id !== categoryId);
       setCategories(updatedCategories);
-      setEditingId(null);
+      setEditing(null);
     } catch (error) {
-      logger.handle(error, "TechStackList");
+      logger.handle(error, "TechCategoryListSection");
+    }
+  };
+
+  const handleSaveStacks = async (categoryId: string, data: TechStackFormData[]) => {
+    try {
+      const updatedStacks = await saveTechStacks(categoryId, data);
+      const updatedCategories = categories.map((category) =>
+        category.id === categoryId ? { ...category, stacks: updatedStacks } : category,
+      );
+      setCategories(updatedCategories);
+      setEditing(null);
+    } catch (error) {
+      logger.handle(error, "TechCategoryListSection");
     }
   };
 
@@ -69,9 +93,9 @@ export function TechCategoryList({ resumeId, initialCategories }: TechStackListP
     setCategories(newCategories);
 
     try {
-      await updateCategoryOrder(resumeId, newCategories);
+      await updateTechCategoryOrder(newCategories);
     } catch (error) {
-      logger.handle(error, "TechStackList");
+      logger.handle(error, "TechCategoryListSection");
     }
   };
 
@@ -80,16 +104,22 @@ export function TechCategoryList({ resumeId, initialCategories }: TechStackListP
       <SortableContext items={categories.map((category) => category.id)} strategy={verticalListSortingStrategy}>
         <div className="grid gap-6">
           {categories.map((category) => (
-            <CategorySection
+            <TechCategoryCard
               key={category.id}
               category={category}
-              editingCategoryId={editingId}
-              onEditingCategoryIdChange={(editingCategoryId) => setEditingId(editingCategoryId)}
-              onUpdate={(name) => handleUpdateCategoryName(category.id, name)}
-              onDelete={() => handleDeleteCategory(category.id)}
+              editingState={editing}
+              onChangeEditingState={setEditing}
+              onSaveStacks={handleSaveStacks}
+              onUpdateName={handleUpdateCategoryName}
+              onDelete={handleDeleteCategory}
             />
           ))}
-          <Button variant="outline" className="w-fit rounded-full" onClick={() => handleAddCategory()}>
+          <Button
+            variant="outline"
+            className="w-fit rounded-full"
+            disabled={editing !== null}
+            onClick={() => handleAddCategory()}
+          >
             <Plus />
             カテゴリを追加
           </Button>

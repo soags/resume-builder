@@ -1,7 +1,12 @@
 import { Pencil } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-export function EditBadgeButton({ tooltip, onClick }: { tooltip: string; onClick: () => void }) {
+type EditBadgeButtonProps = {
+  tooltip: string;
+  onClick: () => void;
+};
+
+export function EditBadgeButton({ tooltip, onClick }: EditBadgeButtonProps) {
   return (
     <TooltipProvider>
       <Tooltip>

@@ -1,5 +1,5 @@
 import { Header } from "../_components/Header";
-import { TechCategoryList } from "./_components/TechCategoryList";
+import { TechCategoryListSection } from "./_components/TechCategoryListSection";
 import { getTechCategories } from "./actions";
 
 export default async function TechPage({ params }: { params: Promise<{ resumeId: string }> }) {
@@ -9,7 +9,7 @@ export default async function TechPage({ params }: { params: Promise<{ resumeId:
   return (
     <>
       <Header title="技術スタック" />
-      <TechCategoryList resumeId={resumeId} initialCategories={categories} />
+      <TechCategoryListSection resumeId={resumeId} initialCategories={categories} />
     </>
   );
 }

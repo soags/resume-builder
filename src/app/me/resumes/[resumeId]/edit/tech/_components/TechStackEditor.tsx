@@ -1,28 +1,23 @@
 "use client";
 
 import { useId, useState } from "react";
-import dynamic from "next/dynamic";
-import { collation, getSuggestions, Option, toOption } from "../utils";
+import { collation, getSuggestions, toOption } from "../utils";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
-import { SortableMultiValueContainer, SortableMultiValueLabel } from "./SortableMultiValue";
 import { Button } from "@/components/ui/button";
-import { TechStack } from "@/generated/prisma/client";
-import { TechStackFormData } from "../schema";
-
-const CreatableSelect = dynamic(() => import("react-select/creatable"), {
-  ssr: false,
-});
+import { TechCategoryWithStacks, TechStackFormData } from "../schema";
+import { SortableMultiSelect } from "@/components/MultiSelect";
+import { MultiSelectOption } from "@/components/MultiSelect";
 
 type CategorySectionProps = {
-  initialStacks: TechStack[];
+  category: TechCategoryWithStacks;
   onSave: (data: TechStackFormData[]) => void;
   onCancel: () => void;
 };
 
-export function CategorySectionEdit({ initialStacks, onSave, onCancel }: CategorySectionProps) {
-  const [value, setValue] = useState<Option[]>(
-    initialStacks.map((stack) =>
+export function TechStackEditor({ category, onSave, onCancel }: CategorySectionProps) {
+  const [value, setValue] = useState(
+    category.stacks.map((stack) =>
       collation({
         value: stack.name,
         label: stack.label,
@@ -55,24 +50,19 @@ export function CategorySectionEdit({ initialStacks, onSave, onCancel }: Categor
     <div className="grid gap-4">
       <DndContext id={dndId} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={value.map((v) => v.value)}>
-          <CreatableSelect
-            isMulti
+          <SortableMultiSelect
+            placeholder="技術スタックを追加"
             value={value}
             options={getSuggestions()}
             getNewOptionData={(input) => toOption(input)}
             onChange={(selected) => {
-              setValue(selected as Option[]);
-            }}
-            placeholder="技術スタックを追加"
-            components={{
-              MultiValueContainer: SortableMultiValueContainer,
-              MultiValueLabel: SortableMultiValueLabel,
+              setValue(selected as MultiSelectOption[]);
             }}
           />
         </SortableContext>
       </DndContext>
       <div className="flex gap-2">
-        <Button variant="outline" className="rounded-full" onClick={() => onCancel()}>
+        <Button variant="outline" className="rounded-full" onClick={onCancel}>
           キャンセル
         </Button>
         <Button className="rounded-full" onClick={handleSave}>

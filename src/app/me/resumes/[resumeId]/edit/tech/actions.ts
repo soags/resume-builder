@@ -18,7 +18,7 @@ export async function getTechCategories(resumeId: string) {
   });
 }
 
-export async function addCategory(resumeId: string) {
+export async function addTechCategory(resumeId: string) {
   const maxOrder = await prisma.techCategory.aggregate({
     where: { resumeId },
     _max: {
@@ -38,14 +38,14 @@ export async function addCategory(resumeId: string) {
   });
 }
 
-export async function updateCategoryName(categoryId: string, name: string) {
+export async function updateTechCategoryName(categoryId: string, name: string) {
   await prisma.techCategory.update({
     where: { id: categoryId },
     data: { name },
   });
 }
 
-export async function updateCategoryOrder(resumeId: string, order: TechCategory[]) {
+export async function updateTechCategoryOrder(order: TechCategory[]) {
   const updates = order.map((category, index) =>
     prisma.techCategory.update({
       where: { id: category.id },
@@ -56,7 +56,7 @@ export async function updateCategoryOrder(resumeId: string, order: TechCategory[
   await prisma.$transaction(updates);
 }
 
-export async function deleteCategory(categoryId: string) {
+export async function deleteTechCategory(categoryId: string) {
   await prisma.techCategory.delete({
     where: { id: categoryId },
   });
@@ -83,4 +83,6 @@ export async function saveTechStacks(categoryId: string, stacks: TechStackFormDa
       })),
     }),
   ]);
+
+  return await getTechStacks(categoryId);
 }
