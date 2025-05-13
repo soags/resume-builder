@@ -9,51 +9,55 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useMemo } from "react";
 
-const items = [
-  {
-    title: "プロフィール",
-    url: "#",
-    icon: SquareUser,
-  },
-  {
-    title: "職務要約",
-    url: "#",
-    icon: FileText,
-  },
-  {
-    title: "技術スタック",
-    url: "#",
-    icon: Layers,
-  },
-  {
-    title: "ハイライト",
-    url: "#",
-    icon: Sun,
-  },
-  {
-    title: "職務経歴",
-    url: "#",
-    icon: SquareChartGantt,
-  },
-  {
-    title: "自己PR",
-    url: "#",
-    icon: SquareUser,
-  },
-  {
-    title: "業務外活動",
-    url: "#",
-    icon: Code,
-  },
-  {
-    title: "資格・免許",
-    url: "#",
-    icon: Award,
-  },
-];
+export function NavResume({ resumeId }: { resumeId: string }) {
+  const items = useMemo(
+    () => [
+      {
+        title: "プロフィール",
+        url: `/me/resumes/${resumeId}`,
+        icon: SquareUser,
+      },
+      {
+        title: "職務要約",
+        url: `/me/resumes/${resumeId}/summary`,
+        icon: FileText,
+      },
+      {
+        title: "技術スタック",
+        url: `/me/resumes/${resumeId}/tech`,
+        icon: Layers,
+      },
+      {
+        title: "ハイライト",
+        url: `/me/resumes/${resumeId}/highlights`,
+        icon: Sun,
+      },
+      {
+        title: "職務経歴",
+        url: `/me/resumes/${resumeId}/work`,
+        icon: SquareChartGantt,
+      },
+      {
+        title: "自己PR",
+        url: `/me/resumes/${resumeId}/promotions`,
+        icon: SquareUser,
+      },
+      {
+        title: "業務外活動",
+        url: `/me/resumes/${resumeId}/projects`,
+        icon: Code,
+      },
+      {
+        title: "資格・免許",
+        url: `/me/resumes/${resumeId}/certs`,
+        icon: Award,
+      },
+    ],
+    [resumeId],
+  );
 
-export function NavResume() {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Resume</SidebarGroupLabel>
