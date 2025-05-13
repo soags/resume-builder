@@ -1,26 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { generateSlugFromEmail } from "@/auth";
 import { PrismaClient } from "@/generated/prisma/client";
+import { nanoid } from "nanoid";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // 既に同一IDのユーザーが存在していれば削除（開発用の前提）
   await prisma.account.deleteMany({
     where: { providerAccountId: "116982279492955464343" },
   });
-  await prisma.user
-    .delete({
-      where: { id: "cd207f5b-dae3-4182-979b-1bb225950916" },
-    })
-    .catch(() => {});
+  await prisma.user.deleteMany({
+    where: { id: "cd207f5b-dae3-4182-979b-1bb225950916" },
+  });
 
-  // User を作成
   const user = await prisma.user.create({
     data: {
       id: "cd207f5b-dae3-4182-979b-1bb225950916",
+      slug: generateSlugFromEmail("s.iehuys@gmail.com"),
       name: "Shuhei Soga",
       email: "s.iehuys@gmail.com",
-      image:
-        "https://lh3.googleusercontent.com/a/ACg8ocKMebZb-aJ8_ylmhTAkjrHUhwC-ng7py7kcjG_Lw1fSklnv6w=s96-c",
+      image: "https://lh3.googleusercontent.com/a/ACg8ocKMebZb-aJ8_ylmhTAkjrHUhwC-ng7py7kcjG_Lw1fSklnv6w=s96-c",
 
       accounts: {
         create: {
@@ -38,12 +38,10 @@ async function main() {
     },
   });
 
-  console.log("🌸 Seed completed. User:", user);
-
-  // Resume の作成
   const resume = await prisma.resume.create({
     data: {
       userId: user.id,
+      slug: nanoid(16),
       title: "職務経歴書",
       name: "曽我 周平",
       label: "技術と誠実を愛するエンジニア",
@@ -100,7 +98,7 @@ async function main() {
     },
   });
 
-  console.log("📝 Resume created:", resume);
+  console.log("🌸 Seed completed.");
 }
 
 main()
