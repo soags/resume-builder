@@ -16,7 +16,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { ResumeFormData, resumeSchema } from "../schema";
 import { updateResume } from "../actions";
-import { logger } from "@/lib/logger";
+import { withClientLogging } from "@/lib/withClientLogging";
 
 type ResumeFormProps = {
   resume: Resume;
@@ -36,11 +36,11 @@ export function ResumeForm({ resume }: ResumeFormProps) {
   };
 
   const handleSubmit = async (data: ResumeFormData) => {
-    try {
-      await updateResume(resume.id, data);
-    } catch (error) {
-      logger.handle(error, "ResumeForm");
-    }
+    await withClientLogging(() => updateResume(resume.id, data), {
+      context: "updateResume",
+      successMessage: "登録が完了しました。",
+      errorMessage: "登録に失敗しました。",
+    });
   };
 
   const autoSubmit = useDebouncedCallback(() => {

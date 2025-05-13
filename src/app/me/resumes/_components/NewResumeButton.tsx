@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { createResume } from "../actions";
 import { useRouter } from "next/navigation";
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { NewResumeDialog } from "./NewResumeDialog";
 import { NewResumeFormData } from "../schema";
+import { withClientLogging } from "@/lib/withClientLogging";
 
 type NewResumeButtonProps = {
   userId: string;
@@ -15,24 +15,28 @@ type NewResumeButtonProps = {
 
 export function NewResumeButton({ userId }: NewResumeButtonProps) {
   const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleSubmit = (data: NewResumeFormData) => {
-    startTransition(async () => {
-      try {
+  const handleSubmit = async (data: NewResumeFormData) => {
+    await withClientLogging(
+      async () => {
         const result = await createResume(userId, data);
         setOpen(false);
-        router.push(`/me/resumes/${result.id}`);
-      } catch (e) {
-        logger.handle(e, "NewResumeButton");
-      }
-    });
+        if (result) {
+          router.push(`/me/resumes/${result.id}`);
+        }
+      },
+      {
+        context: "createResume",
+        successMessage: "職務経歴書を作成しました。",
+        errorMessage: "職務経歴書の作成に失敗しました。",
+      },
+    );
   };
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} disabled={isPending}>
+      <Button onClick={() => setOpen(true)}>
         <Plus />
         職務経歴書を追加
       </Button>

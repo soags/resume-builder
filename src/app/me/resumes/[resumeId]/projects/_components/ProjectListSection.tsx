@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectDialog } from "./ProjectDialog";
 import { createProject, deleteProject, updateProject, updateProjectOrder } from "../actions";
+import { withClientLogging } from "@/lib/withClientLogging";
 
 export type ProjectListSectionProps = {
   resumeId: string;
@@ -28,22 +29,40 @@ export function ProjectListSection({ resumeId, initialProjects }: ProjectListSec
   };
 
   const handleSaveProject = async (data: ProjectFormData) => {
-    const response = editingProject
-      ? await updateProject(resumeId, editingProject.id, data)
-      : await createProject(resumeId, data);
+    await withClientLogging(
+      async () => {
+        const response = editingProject
+          ? await updateProject(resumeId, editingProject.id, data)
+          : await createProject(resumeId, data);
 
-    const updated = editingProject
-      ? projects.map((p) => (p.id === response.id ? response : p))
-      : [...projects, response];
+        if (response) {
+          const updated = editingProject
+            ? projects.map((p) => (p.id === response.id ? response : p))
+            : [...projects, response];
 
-    setProjects(updated);
-    setDialogOpen(false);
-    setEditingProject(null);
+          setProjects(updated);
+          setDialogOpen(false);
+          setEditingProject(null);
+        }
+      },
+      {
+        context: "ProjectListSection.save",
+        errorMessage: "プロジェクトの保存に失敗しました",
+      },
+    );
   };
 
   const handleDeleteProject = async (projectId: string) => {
-    await deleteProject(resumeId, projectId);
-    setProjects((prev) => prev.filter((p) => p.id !== projectId));
+    await withClientLogging(
+      async () => {
+        await deleteProject(resumeId, projectId);
+        setProjects((prev) => prev.filter((p) => p.id !== projectId));
+      },
+      {
+        context: "ProjectListSection.delete",
+        errorMessage: "プロジェクトの削除に失敗しました",
+      },
+    );
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -56,9 +75,17 @@ export function ProjectListSection({ resumeId, initialProjects }: ProjectListSec
 
     setProjects(reordered);
 
-    await updateProjectOrder(
-      resumeId,
-      reordered.map((p, i) => ({ id: p.id, order: i })),
+    await withClientLogging(
+      async () => {
+        await updateProjectOrder(
+          resumeId,
+          reordered.map((p, i) => ({ id: p.id, order: i })),
+        );
+      },
+      {
+        context: "ProjectListSection.updateOrder",
+        errorMessage: "プロジェクトの並び順の更新に失敗しました",
+      },
     );
   };
 

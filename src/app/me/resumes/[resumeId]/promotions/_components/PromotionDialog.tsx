@@ -41,14 +41,6 @@ export function PromotionDialog({ open, initialPromotion, onSave, onClose }: Pro
     form.reset(initialPromotion);
   }, [initialPromotion, form]);
 
-  const {
-    formState: { isValid, isSubmitting },
-  } = form;
-
-  const onSubmit = async (data: PromotionFormData) => {
-    await onSave(data);
-  };
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:w-full sm:max-w-2xl">
@@ -56,7 +48,7 @@ export function PromotionDialog({ open, initialPromotion, onSave, onClose }: Pro
           <DialogTitle>自己PRの編集</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -85,9 +77,7 @@ export function PromotionDialog({ open, initialPromotion, onSave, onClose }: Pro
               )}
             />
             <DialogFooter>
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                {isSubmitting ? "保存中…" : "保存"}
-              </Button>
+              <Button type="submit">保存</Button>
             </DialogFooter>
           </form>
         </Form>

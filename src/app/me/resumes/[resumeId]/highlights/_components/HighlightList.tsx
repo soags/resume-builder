@@ -15,6 +15,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { SortableHighlightForm } from "./SortableHighlightForm";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
+import { withClientLogging } from "@/lib/withClientLogging";
 
 export function HighlightList({ resumeId, initial }: { resumeId: string; initial: Highlight[] }) {
   const [highlights, setHighlights] = useState(initial);
@@ -22,42 +23,64 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
 
   useEffect(() => {
     const fetchHighlights = async () => {
-      try {
-        const data = await getHighlights(resumeId);
-        setHighlights(data);
-      } catch (error) {
-        console.error(`[HighlightList] Error fetching highlights for resumeId=${resumeId}:`, error);
-      }
+      await withClientLogging(
+        async () => {
+          const data = await getHighlights(resumeId);
+          if (data) {
+            setHighlights(data);
+          }
+        },
+        {
+          context: "HighlightList.fetch",
+          errorMessage: "ハイライトの取得に失敗しました",
+        },
+      );
     };
     fetchHighlights();
   }, [resumeId]);
 
   const handleAdd = async () => {
-    try {
-      await addHighlight(resumeId);
-      const data = await getHighlights(resumeId);
-      setHighlights(data);
-    } catch (error) {
-      console.error(`[HighlightList] Error adding highlight for resumeId=${resumeId}:`, error);
-    }
+    await withClientLogging(
+      async () => {
+        await addHighlight(resumeId);
+        const data = await getHighlights(resumeId);
+        if (data) {
+          setHighlights(data);
+        }
+      },
+      {
+        context: "HighlightList.add",
+        errorMessage: "ハイライトの追加に失敗しました",
+      },
+    );
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteHighlight(resumeId, id);
-      const data = await getHighlights(resumeId);
-      setHighlights(data);
-    } catch (error) {
-      console.error(`[HighlightList] Error deleting highlight with id=${id}:`, error);
-    }
+    await withClientLogging(
+      async () => {
+        await deleteHighlight(resumeId, id);
+        const data = await getHighlights(resumeId);
+        if (data) {
+          setHighlights(data);
+        }
+      },
+      {
+        context: "HighlightList.delete",
+        errorMessage: "ハイライトの削除に失敗しました",
+      },
+    );
   };
 
   const debouncedUpdate = useDebouncedCallback(async (id: string, text: string) => {
-    try {
-      await updateHighlight(resumeId, id, text);
-    } catch (error) {
-      console.error(`[HighlightList] Error updating highlight with id=${id}:`, error);
-    }
+    await withClientLogging(
+      async () => {
+        await updateHighlight(resumeId, id, text);
+      },
+      {
+        context: "HighlightList.update",
+        errorMessage: "ハイライトの更新に失敗しました",
+      },
+    );
   }, 500);
 
   const handleUpdate = (id: string, text: string) => {
@@ -72,14 +95,18 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
   };
 
   const updateOrder = async (newHighlights: Highlight[]) => {
-    try {
-      await updateHighlightOrder(
-        resumeId,
-        newHighlights.map((highlight) => highlight.id),
-      );
-    } catch (error) {
-      console.error(`[HighlightList] Error updating highlight order with:`, error);
-    }
+    await withClientLogging(
+      async () => {
+        await updateHighlightOrder(
+          resumeId,
+          newHighlights.map((highlight) => highlight.id),
+        );
+      },
+      {
+        context: "HighlightList.updateOrder",
+        errorMessage: "ハイライトの並び順の更新に失敗しました",
+      },
+    );
   };
 
   const handleDragEnd = (event: DragEndEvent) => {

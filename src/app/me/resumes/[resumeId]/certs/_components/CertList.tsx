@@ -3,45 +3,55 @@
 import { Cert } from "@/generated/prisma/client";
 import { NewCertForm } from "./NewCertForm";
 import { useState } from "react";
-import { addCert, deleteCert, getCerts, updateCert } from "../actions";
+import { addCert, deleteCert, updateCert } from "../actions";
 import { CertFormData } from "../schema";
 import { CertItem } from "./CertItem";
+import { withClientLogging } from "@/lib/withClientLogging";
 
 export function CertList({ resumeId, defaultCerts }: { resumeId: string; defaultCerts: Cert[] }) {
   const [certs, setCerts] = useState(defaultCerts);
 
-  const reloadCerts = async () => {
-    setCerts(await getCerts(resumeId));
-  };
-
   const handleAdd = async (data: CertFormData) => {
-    try {
-      await addCert(resumeId, data);
-      await reloadCerts();
-    } catch (error) {
-      console.error(`[CertList] Error adding cert for resumeId=${resumeId}:`, error);
-    }
+    await withClientLogging(
+      async () => {
+        const cert = await addCert(resumeId, data);
+        if (cert) {
+          setCerts([...certs, cert]);
+        }
+      },
+      {
+        context: "CertList.add",
+        errorMessage: "資格の追加に失敗しました",
+      },
+    );
   };
 
   const handleUpdate = async (id: string, data: CertFormData) => {
-    try {
-      await updateCert(id, data);
-      await reloadCerts();
-    } catch (error) {
-      console.error(
-        `[CertList] Error updating cert with id=${id} for resumeId=${resumeId}:`,
-        error,
-      );
-    }
+    await withClientLogging(
+      async () => {
+        const newCert = await updateCert(id, data);
+        if (newCert) {
+          setCerts(certs.map((cert) => (cert.id === id ? newCert : cert)));
+        }
+      },
+      {
+        context: "CertList.update",
+        errorMessage: "資格の更新に失敗しました",
+      },
+    );
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteCert(id);
-      await reloadCerts();
-    } catch (error) {
-      console.error(`[CertList] Error deleting cert with id=${id}:`, error);
-    }
+    await withClientLogging(
+      async () => {
+        await deleteCert(id);
+        setCerts(certs.filter((cert) => cert.id !== id));
+      },
+      {
+        context: "CertList.delete",
+        errorMessage: "資格の削除に失敗しました",
+      },
+    );
   };
 
   return (

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PromotionItemProps } from "./PromotionItem";
+import { withClientLogging } from "@/lib/withClientLogging";
 
 // DOMPurifyを使用するためにClient componentでSSRを回避する
 const PromotionItem = dynamic<PromotionItemProps>(
@@ -26,15 +27,21 @@ export function PromotionList({
   const [promotions, setPromotions] = useState(initialPromotions);
   const [editing, setEditing] = useState<PromotionFormData | null>(null);
 
-  const withReload = async (fn: () => Promise<void>) => {
-    try {
-      await fn();
-      setPromotions((await getPromotions(resumeId)) ?? []);
-    } catch (error) {
-      console.error("[PromotionList] Error occurred:", error);
-    } finally {
-      setEditing(null);
-    }
+  const withReload = async (fn: () => Promise<void>, context: string, errorMessage: string) => {
+    await withClientLogging(
+      async () => {
+        await fn();
+        const data = await getPromotions(resumeId);
+        if (data) {
+          setPromotions(data);
+        }
+      },
+      {
+        context,
+        errorMessage,
+      },
+    );
+    setEditing(null);
   };
 
   const handleAdd = () => {
@@ -42,15 +49,23 @@ export function PromotionList({
   };
 
   const handleSave = async (data: PromotionFormData) => {
-    withReload(async () => {
-      await savePromotion(resumeId, data);
-    });
+    await withReload(
+      async () => {
+        await savePromotion(resumeId, data);
+      },
+      "PromotionList.save",
+      "自己PRの保存に失敗しました",
+    );
   };
 
   const handleDelete = async (id: string) => {
-    withReload(async () => {
-      await deletePromotion(resumeId, id);
-    });
+    await withReload(
+      async () => {
+        await deletePromotion(resumeId, id);
+      },
+      "PromotionList.delete",
+      "自己PRの削除に失敗しました",
+    );
   };
 
   const moveOrder = async (index: number, direction: "up" | "down") => {
@@ -60,9 +75,13 @@ export function PromotionList({
     const source = promotions[index];
     const target = promotions[targetIndex];
 
-    withReload(async () => {
-      await swapPromotionOrder(resumeId, source.id, target.id);
-    });
+    await withReload(
+      async () => {
+        await swapPromotionOrder(resumeId, source.id, target.id);
+      },
+      "PromotionList.moveOrder",
+      "自己PRの並び順の更新に失敗しました",
+    );
   };
 
   return (
