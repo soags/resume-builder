@@ -3,10 +3,10 @@
 import { Highlight } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getHighlights = (resumeId: string) =>
-  withLogging(
+  withServerLogging(
     async (): Promise<Highlight[]> =>
       prisma.highlight.findMany({
         where: { resumeId },
@@ -16,7 +16,7 @@ export const getHighlights = (resumeId: string) =>
   );
 
 export const addHighlight = (resumeId: string) =>
-  withLogging(async (): Promise<Highlight> => {
+  withServerLogging(async (): Promise<Highlight> => {
     const maxOrder = await prisma.highlight.aggregate({
       _max: { order: true },
       where: { resumeId },
@@ -35,7 +35,7 @@ export const addHighlight = (resumeId: string) =>
   }, "addHighlight");
 
 export const updateHighlight = (resumeId: string, id: string, text: string) =>
-  withLogging(async (): Promise<Highlight> => {
+  withServerLogging(async (): Promise<Highlight> => {
     const highlight = prisma.highlight.update({
       where: { id },
       data: { text },
@@ -45,7 +45,7 @@ export const updateHighlight = (resumeId: string, id: string, text: string) =>
   }, "updateHighlight");
 
 export const updateHighlightOrder = (resumeId: string, order: string[]) =>
-  withLogging(async (): Promise<void> => {
+  withServerLogging(async (): Promise<void> => {
     const updates = order.map((id, index) => {
       return prisma.highlight.update({
         where: { id },
@@ -58,7 +58,7 @@ export const updateHighlightOrder = (resumeId: string, order: string[]) =>
   }, "updateHighlightOrder");
 
 export const deleteHighlight = (resumeId: string, id: string) =>
-  withLogging(async (): Promise<void> => {
+  withServerLogging(async (): Promise<void> => {
     await prisma.highlight.delete({ where: { id } });
     revalidatePath(`/me/resumes/${resumeId}/highlights`);
   }, "deleteHighlight");

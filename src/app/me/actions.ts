@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getResumes = (userId: string) =>
-  withLogging(
+  withServerLogging(
     async () =>
       await prisma.resume.findMany({
         where: { userId },

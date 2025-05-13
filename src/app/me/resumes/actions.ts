@@ -3,10 +3,10 @@
 import prisma from "@/lib/prisma";
 import { NewResumeFormData } from "./schema";
 import { revalidatePath } from "next/cache";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getResumes = (userId: string) =>
-  withLogging(
+  withServerLogging(
     async () =>
       await prisma.resume.findMany({
         where: { userId },
@@ -16,7 +16,7 @@ export const getResumes = (userId: string) =>
   );
 
 export const createResume = (userId: string, data: NewResumeFormData) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     const resume = await prisma.resume.create({
       data: {
         userId,

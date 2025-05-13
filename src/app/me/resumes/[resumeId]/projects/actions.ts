@@ -3,10 +3,10 @@
 import prisma from "@/lib/prisma";
 import { ProjectFormData, ProjectWithStacks } from "./schema";
 import { revalidatePath } from "next/cache";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getProjects = (resumeId: string) =>
-  withLogging(
+  withServerLogging(
     async (): Promise<ProjectWithStacks[]> =>
       prisma.project.findMany({
         where: { resumeId },
@@ -17,7 +17,7 @@ export const getProjects = (resumeId: string) =>
   );
 
 export const createProject = (resumeId: string, data: ProjectFormData) =>
-  withLogging(async (): Promise<ProjectWithStacks> => {
+  withServerLogging(async (): Promise<ProjectWithStacks> => {
     const lastProject = await prisma.project.findFirst({
       where: { resumeId },
       orderBy: { order: "desc" },
@@ -48,7 +48,7 @@ export const createProject = (resumeId: string, data: ProjectFormData) =>
   }, "createProject");
 
 export const updateProject = (resumeId: string, projectId: string, data: ProjectFormData) =>
-  withLogging(async (): Promise<ProjectWithStacks> => {
+  withServerLogging(async (): Promise<ProjectWithStacks> => {
     // 既存のスタックを削除
     await prisma.projectTechStack.deleteMany({
       where: { projectId },
@@ -76,7 +76,7 @@ export const updateProject = (resumeId: string, projectId: string, data: Project
   }, "updateProject");
 
 export const updateProjectOrder = (resumeId: string, projects: { id: string; order: number }[]) =>
-  withLogging(async (): Promise<void> => {
+  withServerLogging(async (): Promise<void> => {
     await Promise.all(
       projects.map((project) =>
         prisma.project.update({
@@ -90,7 +90,7 @@ export const updateProjectOrder = (resumeId: string, projects: { id: string; ord
   }, "updateProjectOrder");
 
 export const deleteProject = (resumeId: string, projectId: string) =>
-  withLogging(async (): Promise<void> => {
+  withServerLogging(async (): Promise<void> => {
     await prisma.project.delete({
       where: { id: projectId },
     });

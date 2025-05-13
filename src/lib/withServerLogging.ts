@@ -1,6 +1,6 @@
 import { logger } from "./logger";
 
-export async function withLogging<T>(
+export async function withServerLogging<T>(
   fn: () => Promise<T>,
   context?: string,
   onError?: () => void,

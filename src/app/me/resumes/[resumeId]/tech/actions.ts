@@ -4,10 +4,10 @@ import prisma from "@/lib/prisma";
 import { TechStackFormData } from "./schema";
 import { TechCategory } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getTechCategories = (resumeId: string) =>
-  withLogging(
+  withServerLogging(
     async () =>
       await prisma.techCategory.findMany({
         where: { resumeId },
@@ -24,7 +24,7 @@ export const getTechCategories = (resumeId: string) =>
   );
 
 export const addTechCategory = (resumeId: string) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     const maxOrder = await prisma.techCategory.aggregate({
       where: { resumeId },
       _max: {
@@ -48,7 +48,7 @@ export const addTechCategory = (resumeId: string) =>
   }, "addTechCategory");
 
 export const updateTechCategoryName = (resumeId: string, categoryId: string, name: string) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     await prisma.techCategory.update({
       where: { id: categoryId },
       data: { name },
@@ -57,7 +57,7 @@ export const updateTechCategoryName = (resumeId: string, categoryId: string, nam
   }, "updateTechCategoryName");
 
 export const updateTechCategoryOrder = (resumeId: string, order: TechCategory[]) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     const updates = order.map((category, index) =>
       prisma.techCategory.update({
         where: { id: category.id },
@@ -70,7 +70,7 @@ export const updateTechCategoryOrder = (resumeId: string, order: TechCategory[])
   }, "updateTechCategoryOrder");
 
 export const deleteTechCategory = (resumeId: string, categoryId: string) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     await prisma.techCategory.delete({
       where: { id: categoryId },
     });
@@ -78,7 +78,7 @@ export const deleteTechCategory = (resumeId: string, categoryId: string) =>
   }, "deleteTechCategory");
 
 export const getTechStacks = (categoryId: string) =>
-  withLogging(
+  withServerLogging(
     async () =>
       await prisma.techStack.findMany({
         where: { categoryId },
@@ -88,7 +88,7 @@ export const getTechStacks = (categoryId: string) =>
   );
 
 export const saveTechStacks = (resumeId: string, categoryId: string, stacks: TechStackFormData[]) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     await prisma.$transaction([
       prisma.techStack.deleteMany({
         where: { categoryId },

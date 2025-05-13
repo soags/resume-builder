@@ -3,10 +3,10 @@
 import prisma from "@/lib/prisma";
 import { PromotionFormData } from "./schema";
 import { revalidatePath } from "next/cache";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getPromotions = (resumeId: string) =>
-  withLogging(
+  withServerLogging(
     async () =>
       prisma.promotion.findMany({
         where: { resumeId },
@@ -16,7 +16,7 @@ export const getPromotions = (resumeId: string) =>
   );
 
 export const savePromotion = (resumeId: string, data: PromotionFormData) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     const id = data.id;
 
     let promotion;
@@ -47,7 +47,7 @@ export const savePromotion = (resumeId: string, data: PromotionFormData) =>
   }, "savePromotion");
 
 export const swapPromotionOrder = (resumeId: string, sourceId: string, targetId: string) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     const promotions = await prisma.promotion.findMany({
       where: {
         id: { in: [sourceId, targetId] },
@@ -77,7 +77,7 @@ export const swapPromotionOrder = (resumeId: string, sourceId: string, targetId:
   }, "swapPromotionOrder");
 
 export const deletePromotion = (resumeId: string, id: string) =>
-  withLogging(async () => {
+  withServerLogging(async () => {
     await prisma.promotion.delete({
       where: { id },
     });

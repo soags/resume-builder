@@ -4,10 +4,10 @@ import { Cert } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { CertFormData } from "./schema";
 import { revalidatePath } from "next/cache";
-import { withLogging } from "@/lib/withLogging";
+import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getCerts = (resumeId: string) =>
-  withLogging(
+  withServerLogging(
     async (): Promise<Cert[]> =>
       prisma.cert.findMany({
         where: { resumeId },
@@ -17,7 +17,7 @@ export const getCerts = (resumeId: string) =>
   );
 
 export const addCert = (resumeId: string, data: CertFormData) =>
-  withLogging(async (): Promise<Cert> => {
+  withServerLogging(async (): Promise<Cert> => {
     const cert = prisma.cert.create({
       data: {
         resumeId,
@@ -33,7 +33,7 @@ export const addCert = (resumeId: string, data: CertFormData) =>
   }, "addCert");
 
 export const updateCert = (id: string, data: CertFormData) =>
-  withLogging(async (): Promise<Cert> => {
+  withServerLogging(async (): Promise<Cert> => {
     const cert = prisma.cert.update({
       where: { id },
       data: {
@@ -49,7 +49,7 @@ export const updateCert = (id: string, data: CertFormData) =>
   }, "updateCert");
 
 export const deleteCert = (id: string) =>
-  withLogging(async (): Promise<void> => {
+  withServerLogging(async (): Promise<void> => {
     await prisma.cert.delete({ where: { id } });
     revalidatePath("/me/resumes/[resumeId]/certs");
   }, "deleteCert");
