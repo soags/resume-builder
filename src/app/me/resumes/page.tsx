@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Import, Plus } from "lucide-react";
+import { Import } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getResumes } from "./actions";
 import { ResumeTable } from "./_components/ResumeTable";
+import { NewResumeButton } from "./_components/NewResumeButton";
 
 export default async function ResumesPage() {
   const session = await auth();
@@ -20,12 +21,7 @@ export default async function ResumesPage() {
         <h2 className="text-2xl font-bold">職務経歴書</h2>
 
         <div className="flex items-center gap-2">
-          <Button asChild>
-            <Link href="/me/resumes/new">
-              <Plus />
-              職務経歴書を追加
-            </Link>
-          </Button>
+          <NewResumeButton userId={session.user.id!} />
           <Button asChild>
             <Link href="#">
               <Import />
