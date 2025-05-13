@@ -20,7 +20,8 @@ async function main() {
       slug: generateSlugFromEmail("s.iehuys@gmail.com"),
       name: "Shuhei Soga",
       email: "s.iehuys@gmail.com",
-      image: "https://lh3.googleusercontent.com/a/ACg8ocKMebZb-aJ8_ylmhTAkjrHUhwC-ng7py7kcjG_Lw1fSklnv6w=s96-c",
+      image:
+        "https://lh3.googleusercontent.com/a/ACg8ocKMebZb-aJ8_ylmhTAkjrHUhwC-ng7py7kcjG_Lw1fSklnv6w=s96-c",
 
       accounts: {
         create: {

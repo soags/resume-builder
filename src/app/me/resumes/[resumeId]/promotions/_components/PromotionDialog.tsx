@@ -1,12 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PromotionFormData, promotionSchema } from "../schema";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 
@@ -62,7 +75,11 @@ export function PromotionDialog({ open, initialPromotion, onSave, onClose }: Pro
               name="body"
               render={({ field }) => (
                 <FormItem>
-                  <Textarea placeholder="本文を入力" className="min-h-[150px] resize-y" {...field} />
+                  <Textarea
+                    placeholder="本文を入力"
+                    className="min-h-[150px] resize-y"
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

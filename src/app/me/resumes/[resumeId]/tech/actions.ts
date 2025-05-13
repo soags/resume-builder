@@ -76,7 +76,11 @@ export async function getTechStacks(categoryId: string) {
   });
 }
 
-export async function saveTechStacks(resumeId: string, categoryId: string, stacks: TechStackFormData[]) {
+export async function saveTechStacks(
+  resumeId: string,
+  categoryId: string,
+  stacks: TechStackFormData[],
+) {
   await prisma.$transaction([
     prisma.techStack.deleteMany({
       where: { categoryId },

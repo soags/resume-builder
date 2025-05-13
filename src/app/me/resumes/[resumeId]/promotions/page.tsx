@@ -13,10 +13,7 @@ export default async function PromotionsPage({
   return (
     <>
       <Header title="資格" />
-      <PromotionList
-        resumeId={resumeId}
-        initialPromotions={initialPromotions}
-      />
+      <PromotionList resumeId={resumeId} initialPromotions={initialPromotions} />
     </>
   );
 }

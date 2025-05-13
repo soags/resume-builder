@@ -3,19 +3,19 @@
 import { useForm } from "react-hook-form";
 import { ProjectFormData, projectSchema } from "../schema";
 import { TechStackSelector } from "@/components/TechStack/TechStackSelector";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 
 type ProjectDialogProps = {
@@ -76,7 +76,11 @@ export function ProjectDialog({ initialProject, open, onOpenChange, onSave }: Pr
                 <FormItem>
                   <FormLabel>概要</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="概要を入力" className="min-h-[60px] resize-y" {...field} />
+                    <Textarea
+                      placeholder="概要を入力"
+                      className="min-h-[60px] resize-y"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

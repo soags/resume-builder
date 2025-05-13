@@ -29,10 +29,7 @@ export function CertItem({ cert, onSubmit, onDelete }: CertItemProps) {
               onFinishEditing={() => setIsEditing(false)}
             />
           ) : (
-            <CertItemView
-              cert={cert}
-              onStartEditing={() => setIsEditing(true)}
-            />
+            <CertItemView cert={cert} onStartEditing={() => setIsEditing(true)} />
           )}
           <div className="flex items-start justify-end">
             <Button

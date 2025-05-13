@@ -34,7 +34,9 @@ export function MultiSelect({ components, classNames, styles, ...props }: MultiS
   );
 }
 
-function DropdownIndicator(props: DropdownIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
+function DropdownIndicator(
+  props: DropdownIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+) {
   return (
     <components.DropdownIndicator {...props}>
       <ChevronDown className={"h-4 w-4 opacity-50"} />
@@ -42,7 +44,9 @@ function DropdownIndicator(props: DropdownIndicatorProps<MultiSelectOption, true
   );
 }
 
-function ClearIndicator(props: ClearIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
+function ClearIndicator(
+  props: ClearIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+) {
   return (
     <components.ClearIndicator {...props}>
       <X className={"h-3.5 w-3.5 opacity-50"} />
@@ -50,7 +54,9 @@ function ClearIndicator(props: ClearIndicatorProps<MultiSelectOption, true, Grou
   );
 }
 
-function MultiValueRemove(props: MultiValueRemoveProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
+function MultiValueRemove(
+  props: MultiValueRemoveProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+) {
   return (
     <components.MultiValueRemove {...props}>
       <X className={"h-3 w-3 opacity-50"} />

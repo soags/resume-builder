@@ -13,7 +13,9 @@ type ProjectCardProps = {
 };
 
 export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: project.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: project.id,
+  });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),

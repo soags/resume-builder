@@ -42,12 +42,21 @@ export function FormYearMonthField<TFieldValues extends FieldValues>({
   return (
     <div>
       {label && (
-        <Label data-slot="form-label" data-error={!!error} className="data-[error=true]:text-destructive mb-2">
+        <Label
+          data-slot="form-label"
+          data-error={!!error}
+          className="data-[error=true]:text-destructive mb-2"
+        >
           {label}
         </Label>
       )}
       <div className="flex items-center gap-x-2">
-        <FormYearInput control={control} name={yearName} onChange={() => onChange?.({ year, month })} onBlur={onBlur} />
+        <FormYearInput
+          control={control}
+          name={yearName}
+          onChange={() => onChange?.({ year, month })}
+          onBlur={onBlur}
+        />
         <FormMonthInput
           control={control}
           name={monthName}

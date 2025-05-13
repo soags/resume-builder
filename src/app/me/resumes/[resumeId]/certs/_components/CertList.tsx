@@ -7,13 +7,7 @@ import { addCert, deleteCert, getCerts, updateCert } from "../actions";
 import { CertFormData } from "../schema";
 import { CertItem } from "./CertItem";
 
-export function CertList({
-  resumeId,
-  defaultCerts,
-}: {
-  resumeId: string;
-  defaultCerts: Cert[];
-}) {
+export function CertList({ resumeId, defaultCerts }: { resumeId: string; defaultCerts: Cert[] }) {
   const [certs, setCerts] = useState(defaultCerts);
 
   const reloadCerts = async () => {
@@ -25,10 +19,7 @@ export function CertList({
       await addCert(resumeId, data);
       await reloadCerts();
     } catch (error) {
-      console.error(
-        `[CertList] Error adding cert for resumeId=${resumeId}:`,
-        error,
-      );
+      console.error(`[CertList] Error adding cert for resumeId=${resumeId}:`, error);
     }
   };
 
@@ -56,12 +47,7 @@ export function CertList({
   return (
     <div className="space-y-4">
       {certs.map((cert) => (
-        <CertItem
-          key={cert.id}
-          cert={cert}
-          onSubmit={handleUpdate}
-          onDelete={handleDelete}
-        />
+        <CertItem key={cert.id} cert={cert} onSubmit={handleUpdate} onDelete={handleDelete} />
       ))}
       <NewCertForm onSubmit={handleAdd} />
     </div>

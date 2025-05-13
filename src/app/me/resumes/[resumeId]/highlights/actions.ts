@@ -29,7 +29,11 @@ export async function addHighlight(resumeId: string): Promise<Highlight> {
   return highlight;
 }
 
-export async function updateHighlight(resumeId: string, id: string, text: string): Promise<Highlight> {
+export async function updateHighlight(
+  resumeId: string,
+  id: string,
+  text: string,
+): Promise<Highlight> {
   const highlight = prisma.highlight.update({
     where: { id },
     data: { text },

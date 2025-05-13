@@ -47,13 +47,15 @@ const optionStyles = {
   disabled: "pointer-events-none opacity-50",
   selected: "",
 };
-const noOptionsMessageStyles = "text-accent-foreground p-2 bg-accent border border-dashed border-border rounded-sm";
+const noOptionsMessageStyles =
+  "text-accent-foreground p-2 bg-accent border border-dashed border-border rounded-sm";
 const loadingIndicatorStyles = "flex items-center justify-center h-4 w-4 opacity-50";
 const loadingMessageStyles = "text-accent-foreground p-2 bg-accent";
 
 export const createClassNames = (classNames: ClassNames): ClassNames => ({
-  clearIndicator: (state: ClearIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(clearIndicatorStyles, classNames?.clearIndicator?.(state)),
+  clearIndicator: (
+    state: ClearIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(clearIndicatorStyles, classNames?.clearIndicator?.(state)),
 
   container: (state: ContainerProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
     cn(classNames?.container?.(state)),
@@ -66,24 +68,30 @@ export const createClassNames = (classNames: ClassNames): ClassNames => ({
       classNames?.control?.(state),
     ),
 
-  dropdownIndicator: (state: DropdownIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(dropdownIndicatorStyles, classNames?.dropdownIndicator?.(state)),
+  dropdownIndicator: (
+    state: DropdownIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(dropdownIndicatorStyles, classNames?.dropdownIndicator?.(state)),
 
-  group: (state: GroupProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) => cn(classNames?.group?.(state)),
+  group: (state: GroupProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
+    cn(classNames?.group?.(state)),
 
   groupHeading: (state: GroupHeadingProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
     cn(groupHeadingStyles, classNames?.groupHeading?.(state)),
 
-  indicatorsContainer: (state: IndicatorsContainerProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(indicatorsContainerStyles, classNames?.indicatorsContainer?.(state)),
+  indicatorsContainer: (
+    state: IndicatorsContainerProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(indicatorsContainerStyles, classNames?.indicatorsContainer?.(state)),
 
-  indicatorSeparator: (state: IndicatorSeparatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(indicatorSeparatorStyles, classNames?.indicatorSeparator?.(state)),
+  indicatorSeparator: (
+    state: IndicatorSeparatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(indicatorSeparatorStyles, classNames?.indicatorSeparator?.(state)),
 
-  input: (state: InputProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) => cn(classNames?.input?.(state)),
+  input: (state: InputProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
+    cn(classNames?.input?.(state)),
 
-  loadingIndicator: (state: LoadingIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(loadingIndicatorStyles, classNames?.loadingIndicator?.(state)),
+  loadingIndicator: (
+    state: LoadingIndicatorProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(loadingIndicatorStyles, classNames?.loadingIndicator?.(state)),
 
   loadingMessage: (state: NoticeProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
     cn(loadingMessageStyles, classNames?.loadingMessage?.(state)),
@@ -100,11 +108,13 @@ export const createClassNames = (classNames: ClassNames): ClassNames => ({
   multiValue: (state: MultiValueProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
     cn(multiValueStyles, classNames?.multiValue?.(state)),
 
-  multiValueLabel: (state: MultiValueProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(classNames?.multiValueLabel?.(state)),
+  multiValueLabel: (
+    state: MultiValueProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(classNames?.multiValueLabel?.(state)),
 
-  multiValueRemove: (state: MultiValueProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(classNames?.multiValueRemove?.(state)),
+  multiValueRemove: (
+    state: MultiValueProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(classNames?.multiValueRemove?.(state)),
 
   noOptionsMessage: (state: NoticeProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
     cn(noOptionsMessageStyles, classNames?.noOptionsMessage?.(state)),
@@ -124,8 +134,9 @@ export const createClassNames = (classNames: ClassNames): ClassNames => ({
   singleValue: (state: SingleValueProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
     cn(classNames?.singleValue?.(state)),
 
-  valueContainer: (state: ValueContainerProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) =>
-    cn(valueContainerStyles, classNames?.valueContainer?.(state)),
+  valueContainer: (
+    state: ValueContainerProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+  ) => cn(valueContainerStyles, classNames?.valueContainer?.(state)),
 });
 
 export const defaultClassNames = createClassNames({});

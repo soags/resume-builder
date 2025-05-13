@@ -12,7 +12,10 @@ export async function getProjects(resumeId: string): Promise<ProjectWithStacks[]
   });
 }
 
-export async function createProject(resumeId: string, data: ProjectFormData): Promise<ProjectWithStacks> {
+export async function createProject(
+  resumeId: string,
+  data: ProjectFormData,
+): Promise<ProjectWithStacks> {
   const lastProject = await prisma.project.findFirst({
     where: { resumeId },
     orderBy: { order: "desc" },
@@ -73,7 +76,10 @@ export async function updateProject(
   return project;
 }
 
-export async function updateProjectOrder(resumeId: string, projects: { id: string; order: number }[]): Promise<void> {
+export async function updateProjectOrder(
+  resumeId: string,
+  projects: { id: string; order: number }[],
+): Promise<void> {
   await Promise.all(
     projects.map((project) =>
       prisma.project.update({

@@ -2,7 +2,11 @@ import { Header } from "../_components/Header";
 import { ProjectListSection } from "./_components/ProjectListSection";
 import { getProjects } from "./actions";
 
-export default async function PromotionsPage({ params }: { params: Promise<{ resumeId: string }> }) {
+export default async function PromotionsPage({
+  params,
+}: {
+  params: Promise<{ resumeId: string }>;
+}) {
   const { resumeId } = await params;
   const projects = await getProjects(resumeId);
 

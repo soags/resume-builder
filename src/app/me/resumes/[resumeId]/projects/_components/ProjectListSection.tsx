@@ -64,7 +64,10 @@ export function ProjectListSection({ resumeId, initialProjects }: ProjectListSec
 
   return (
     <DndContext id={dndId} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={projects.map((project) => project.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={projects.map((project) => project.id)}
+        strategy={verticalListSortingStrategy}
+      >
         <div className="grid gap-6">
           {projects.map((project) => (
             <ProjectCard

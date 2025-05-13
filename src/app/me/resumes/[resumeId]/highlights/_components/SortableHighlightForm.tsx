@@ -6,12 +6,10 @@ import { CSS } from "@dnd-kit/utilities";
 
 type SortableHighlightFormProps = Omit<HighlightFormProps, "dragHandleProps">;
 
-export function SortableHighlightForm({
-  highlight,
-  ...props
-}: SortableHighlightFormProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: highlight.id });
+export function SortableHighlightForm({ highlight, ...props }: SortableHighlightFormProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: highlight.id,
+  });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -25,11 +23,7 @@ export function SortableHighlightForm({
 
   return (
     <div ref={setNodeRef} style={style}>
-      <HighlightForm
-        highlight={highlight}
-        dragHandleProps={dragHandleProps}
-        {...props}
-      />
+      <HighlightForm highlight={highlight} dragHandleProps={dragHandleProps} {...props} />
     </div>
   );
 }

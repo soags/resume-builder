@@ -1,6 +1,14 @@
 "use client";
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Resume } from "@/generated/prisma/client";
@@ -51,7 +59,9 @@ export function ResumeForm({ resume }: ResumeFormProps) {
               <FormControl>
                 <Input onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
-              <FormDescription>管理用のタイトルです。職務経歴書には表示されません。</FormDescription>
+              <FormDescription>
+                管理用のタイトルです。職務経歴書には表示されません。
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -65,7 +75,9 @@ export function ResumeForm({ resume }: ResumeFormProps) {
               <FormControl>
                 <Input onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
-              <FormDescription>公開用URL(/r/:userSlug/:resumeSlug/)に使用するSlugです。</FormDescription>
+              <FormDescription>
+                公開用URL(/r/:userSlug/:resumeSlug/)に使用するSlugです。
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -90,7 +102,11 @@ export function ResumeForm({ resume }: ResumeFormProps) {
             <FormItem>
               <FormLabel>職種</FormLabel>
               <FormControl>
-                <Input placeholder="フルスタックエンジニア" onBlur={handleBlur(onBlur)} {...field} />
+                <Input
+                  placeholder="フルスタックエンジニア"
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -103,7 +119,11 @@ export function ResumeForm({ resume }: ResumeFormProps) {
             <FormItem>
               <FormLabel>GitHub URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://github.com/..." onBlur={handleBlur(onBlur)} {...field} />
+                <Input
+                  placeholder="https://github.com/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -142,7 +162,11 @@ export function ResumeForm({ resume }: ResumeFormProps) {
             <FormItem>
               <FormLabel>Speaker Deck URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://speakerdeck.com/..." onBlur={handleBlur(onBlur)} {...field} />
+                <Input
+                  placeholder="https://speakerdeck.com/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -155,7 +179,11 @@ export function ResumeForm({ resume }: ResumeFormProps) {
             <FormItem>
               <FormLabel>SlideShare URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://www.slideshare.net/..." onBlur={handleBlur(onBlur)} {...field} />
+                <Input
+                  placeholder="https://www.slideshare.net/..."
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

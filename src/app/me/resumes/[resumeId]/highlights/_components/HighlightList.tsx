@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { getHighlights, addHighlight, deleteHighlight, updateHighlight, updateHighlightOrder } from "../actions";
+import {
+  getHighlights,
+  addHighlight,
+  deleteHighlight,
+  updateHighlight,
+  updateHighlightOrder,
+} from "../actions";
 import { Highlight } from "@/generated/prisma/client";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,7 +64,9 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
     const current = highlights.find((h) => h.id === id);
     if (current?.text === text) return;
 
-    const updatedHighlights = highlights.map((highlight) => (highlight.id === id ? { ...highlight, text } : highlight));
+    const updatedHighlights = highlights.map((highlight) =>
+      highlight.id === id ? { ...highlight, text } : highlight,
+    );
     setHighlights(updatedHighlights);
     debouncedUpdate(id, text);
   };
@@ -93,7 +101,10 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
   return (
     <div>
       <DndContext id={dndId} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={highlights.map((highlight) => highlight.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={highlights.map((highlight) => highlight.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <div className="space-y-2">
             {highlights.map((highlight) => (
               <SortableHighlightForm

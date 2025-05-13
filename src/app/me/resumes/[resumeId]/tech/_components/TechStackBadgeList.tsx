@@ -15,7 +15,11 @@ export function TechStackBadgeList({ category, onStartEditing }: CategorySection
       {category.stacks.length > 0 ? (
         <>
           {category.stacks.map((stack) => (
-            <Badge key={stack.id} className="rounded-full px-2 text-sm" aria-label={`技術スタック: ${stack.label}`}>
+            <Badge
+              key={stack.id}
+              className="rounded-full px-2 text-sm"
+              aria-label={`技術スタック: ${stack.label}`}
+            >
               {stack.label}
             </Badge>
           ))}

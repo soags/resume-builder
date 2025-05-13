@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Resume } from "@/generated/prisma/client";
 import { formatDate } from "@/lib/utils";
 import { useResumeStore } from "@/stores/resumeStore";
@@ -50,7 +57,10 @@ export function ResumeSelectorDialog({ resumes }: ResumeSelectorDialogProps) {
                   <td className="border p-2">{resume.title}</td>
                   <td className="border p-2">{formatDate(resume.updatedAt)}</td>
                   <td className="border p-2 text-center">
-                    <button className="text-blue-600 hover:underline" onClick={() => handleSelect(resume.id)}>
+                    <button
+                      className="text-blue-600 hover:underline"
+                      onClick={() => handleSelect(resume.id)}
+                    >
                       選択
                     </button>
                   </td>

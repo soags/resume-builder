@@ -31,7 +31,9 @@ const DragHandleContext = createContext<{
   listeners: undefined,
 });
 
-function MultiValueContainer(props: MultiValueGenericProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
+function MultiValueContainer(
+  props: MultiValueGenericProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: props.data.value,
   });
@@ -50,7 +52,9 @@ function MultiValueContainer(props: MultiValueGenericProps<MultiSelectOption, tr
   );
 }
 
-function MultiValueLabel(props: MultiValueGenericProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>) {
+function MultiValueLabel(
+  props: MultiValueGenericProps<MultiSelectOption, true, GroupBase<MultiSelectOption>>,
+) {
   const { attributes, listeners } = useContext(DragHandleContext);
 
   const dragHandleProps = {

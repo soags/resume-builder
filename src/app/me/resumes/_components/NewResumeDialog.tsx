@@ -1,12 +1,25 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NewResumeFormData, newResumeSchema } from "../schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useEffect } from "react";
 import { nanoid } from "nanoid";
 
@@ -47,7 +60,9 @@ export function NewResumeDialog({ isOpen, onClose, onSubmit }: NewResumeDialogPr
                   <FormItem>
                     <FormLabel>タイトル</FormLabel>
                     <Input {...field} placeholder="職務経歴書のタイトルを入力" />
-                    <FormDescription>管理用のタイトルです。職務経歴書には表示されません。</FormDescription>
+                    <FormDescription>
+                      管理用のタイトルです。職務経歴書には表示されません。
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -59,7 +74,9 @@ export function NewResumeDialog({ isOpen, onClose, onSubmit }: NewResumeDialogPr
                   <FormItem>
                     <FormLabel>スラッグ</FormLabel>
                     <Input {...field} placeholder="職務経歴書のスラッグを入力" />
-                    <FormDescription>公開用URL(/r/:userSlug/:resumeSlug/)に使用するSlugです。</FormDescription>
+                    <FormDescription>
+                      公開用URL(/r/:userSlug/:resumeSlug/)に使用するSlugです。
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

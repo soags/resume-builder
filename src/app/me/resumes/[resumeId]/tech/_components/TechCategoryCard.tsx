@@ -29,9 +29,12 @@ export default function TechCategoryCard({
   onDelete,
 }: CategorySectionProps) {
   const isEditingName = editingState?.categoryId === category.id && editingState?.mode === "name";
-  const isEditingStacks = editingState?.categoryId === category.id && editingState?.mode === "stacks";
+  const isEditingStacks =
+    editingState?.categoryId === category.id && editingState?.mode === "stacks";
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: category.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: category.id,
+  });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -73,7 +76,9 @@ export default function TechCategoryCard({
           ) : (
             <TechStackBadgeList
               category={category}
-              onStartEditing={() => onChangeEditingState({ categoryId: category.id, mode: "stacks" })}
+              onStartEditing={() =>
+                onChangeEditingState({ categoryId: category.id, mode: "stacks" })
+              }
             />
           )}
         </CardContent>

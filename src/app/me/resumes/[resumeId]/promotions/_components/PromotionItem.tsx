@@ -25,9 +25,7 @@ export function PromotionItem({
   onMoveDown,
   onDelete,
 }: PromotionItemProps) {
-  const sanitizedHtml = DOMPurify.sanitize(
-    promotion.body.replace(/\n/g, "<br />"),
-  );
+  const sanitizedHtml = DOMPurify.sanitize(promotion.body.replace(/\n/g, "<br />"));
 
   return (
     <Card

@@ -101,7 +101,10 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
 
   return (
     <DndContext id={dndId} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={categories.map((category) => category.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={categories.map((category) => category.id)}
+        strategy={verticalListSortingStrategy}
+      >
         <div className="grid gap-6">
           {categories.map((category) => (
             <TechCategoryCard

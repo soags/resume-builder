@@ -19,9 +19,7 @@ export function CertItemView({ cert, onStartEditing }: CertItemProps) {
       </div>
       <div className="mt-2 flex items-center">
         <CalendarIcon className="text-muted-foreground mr-2 h-5 w-5" />
-        <p className="text-muted-foreground">
-          {formatMonthJp(cert.year, cert.month)}
-        </p>
+        <p className="text-muted-foreground">{formatMonthJp(cert.year, cert.month)}</p>
       </div>
       {cert.issuer && (
         <div className="mt-2 flex items-center">
@@ -32,11 +30,7 @@ export function CertItemView({ cert, onStartEditing }: CertItemProps) {
       {cert.url && (
         <div className="mt-2 flex items-center">
           <LinkIcon className="text-muted-foreground mr-2 h-5 w-5" />
-          <Link
-            href={cert.url}
-            target="_blank"
-            className="text-blue-500 hover:underline"
-          >
+          <Link href={cert.url} target="_blank" className="text-blue-500 hover:underline">
             <p className="break-all">{cert.url}</p>
           </Link>
         </div>

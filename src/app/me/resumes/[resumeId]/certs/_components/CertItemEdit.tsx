@@ -35,7 +35,7 @@ export function CertItemEdit({ defaultValues, onSubmit, onFinishEditing }: CertI
     const el = ref.current;
     if (!el) return;
 
-    const onFocusOut = (_: FocusEvent) => {
+    const onFocusOut = () => {
       setTimeout(() => {
         const active = document.activeElement;
 
@@ -65,7 +65,12 @@ export function CertItemEdit({ defaultValues, onSubmit, onFinishEditing }: CertI
             name="name"
             render={({ field: { onBlur, ...field } }) => (
               <FormItem className="w-full">
-                <Input placeholder="資格名を入力" onBlur={handleBlur(onBlur)} autoFocus {...field} />
+                <Input
+                  placeholder="資格名を入力"
+                  onBlur={handleBlur(onBlur)}
+                  autoFocus
+                  {...field}
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -89,7 +94,11 @@ export function CertItemEdit({ defaultValues, onSubmit, onFinishEditing }: CertI
             name="issuer"
             render={({ field: { onBlur, ...field } }) => (
               <FormItem className="w-full">
-                <Input placeholder="発行団体名を入力（任意）" onBlur={handleBlur(onBlur)} {...field} />
+                <Input
+                  placeholder="発行団体名を入力（任意）"
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -102,7 +111,11 @@ export function CertItemEdit({ defaultValues, onSubmit, onFinishEditing }: CertI
             name="url"
             render={({ field: { onBlur, ...field } }) => (
               <FormItem className="w-full">
-                <Input placeholder="認定証のURLなどを入力（任意）" onBlur={handleBlur(onBlur)} {...field} />
+                <Input
+                  placeholder="認定証のURLなどを入力（任意）"
+                  onBlur={handleBlur(onBlur)}
+                  {...field}
+                />
                 <FormMessage />
               </FormItem>
             )}

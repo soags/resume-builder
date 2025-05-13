@@ -1,7 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Resume } from "@/generated/prisma/client";
 import { formatDate } from "@/lib/utils";
 import { Download, Edit, Ellipsis, Monitor } from "lucide-react";
@@ -37,7 +44,11 @@ export function ResumeTable({ items }: ResumeTableProps) {
             <TableCell>非公開</TableCell>
             <TableCell>{formatDate(item.updatedAt)}</TableCell>
             <TableCell className="flex justify-end space-x-2">
-              <Button variant="ghost" className="hover:cursor-pointer" onClick={() => handleEdit(item.id)}>
+              <Button
+                variant="ghost"
+                className="hover:cursor-pointer"
+                onClick={() => handleEdit(item.id)}
+              >
                 <Edit />
                 編集
               </Button>

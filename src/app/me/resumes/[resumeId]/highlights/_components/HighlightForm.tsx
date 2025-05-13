@@ -13,7 +13,12 @@ export type HighlightFormProps = {
   onDelete: (id: string) => void;
 };
 
-export function HighlightForm({ highlight, dragHandleProps, onChange, onDelete }: HighlightFormProps) {
+export function HighlightForm({
+  highlight,
+  dragHandleProps,
+  onChange,
+  onDelete,
+}: HighlightFormProps) {
   return (
     <div className="flex items-center gap-x-2">
       {/* ドラッグハンドル */}

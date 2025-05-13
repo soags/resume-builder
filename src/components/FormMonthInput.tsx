@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Controller,
-  ControllerProps,
-  FieldPath,
-  FieldValues,
-} from "react-hook-form";
+import { Controller, ControllerProps, FieldPath, FieldValues } from "react-hook-form";
 import { NumberSelect } from "./NumberSelect";
 import { useMemo } from "react";
 
@@ -33,9 +28,7 @@ export function FormMonthInput<TFieldValues extends FieldValues>({
     <div className="flex items-center gap-x-2">
       <Controller
         {...props}
-        render={({
-          field: { value, onChange: onChangeField, onBlur: onBlurField },
-        }) => (
+        render={({ field: { value, onChange: onChangeField, onBlur: onBlurField } }) => (
           <NumberSelect
             value={value}
             items={items}

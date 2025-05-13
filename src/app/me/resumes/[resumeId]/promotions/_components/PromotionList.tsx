@@ -16,7 +16,13 @@ const PromotionItem = dynamic<PromotionItemProps>(
   { ssr: false },
 );
 
-export function PromotionList({ resumeId, initialPromotions }: { resumeId: string; initialPromotions: Promotion[] }) {
+export function PromotionList({
+  resumeId,
+  initialPromotions,
+}: {
+  resumeId: string;
+  initialPromotions: Promotion[];
+}) {
   const [promotions, setPromotions] = useState(initialPromotions);
   const [editing, setEditing] = useState<PromotionFormData | null>(null);
 

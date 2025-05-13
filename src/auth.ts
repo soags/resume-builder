@@ -38,8 +38,11 @@ function AppPrismaAdapter(): Adapter {
         try {
           const created = await prisma.user.create({
             data: {
-              ...user,
               slug,
+              name: user.name ?? "",
+              email: user.email,
+              emailVerified: user.emailVerified,
+              image: user.image,
             },
           });
 

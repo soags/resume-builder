@@ -21,7 +21,13 @@ export function GoogleLoginButton() {
   };
 
   return (
-    <Button variant="outline" type="button" disabled={isLoading} onClick={loginWithGoogle} className="w-full">
+    <Button
+      variant="outline"
+      type="button"
+      disabled={isLoading}
+      onClick={loginWithGoogle}
+      className="w-full"
+    >
       {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path

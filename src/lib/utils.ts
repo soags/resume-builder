@@ -13,10 +13,7 @@ export function formatDate(date: Date | string): string {
   return format(d, "yyyy/MM/dd");
 }
 
-export function formatMonthJp(
-  year: number | null,
-  month: number | null,
-): string {
+export function formatMonthJp(year: number | null, month: number | null): string {
   if (year == null) return "";
   return month != null ? `${year}年${month}月` : `${year}年`;
 }
