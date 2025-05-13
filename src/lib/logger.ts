@@ -14,10 +14,11 @@ export const logger = {
     if (isDev) console.info(...args);
   },
   handle(error: unknown, context?: string) {
+    const prefix = `[${context}]`;
     if (error instanceof Error) {
-      logger.error(`[${context}]`, error);
+      logger.error(prefix, error.stack || error.message);
     } else {
-      logger.error(`[${context}]`, new Error("Unknown error"), error);
+      logger.error(prefix, new Error("Unknown error"), error);
     }
   },
 };
