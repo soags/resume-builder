@@ -2,84 +2,55 @@
 
 import { Highlight } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function getHighlights(resumeId: string): Promise<Highlight[]> {
-  try {
-    return prisma.highlight.findMany({
-      where: { resumeId },
-      orderBy: { order: "asc" },
-    });
-  } catch (error) {
-    console.error(
-      `[getHighlights] Error fetching highlights for resumeId=${resumeId}:`,
-      error,
-    );
-    throw new Error("Failed to fetch highlights");
-  }
+  return prisma.highlight.findMany({
+    where: { resumeId },
+    orderBy: { order: "asc" },
+  });
 }
 
 export async function addHighlight(resumeId: string): Promise<Highlight> {
-  try {
-    const maxOrder = await prisma.highlight.aggregate({
-      _max: { order: true },
-      where: { resumeId },
-    });
+  const maxOrder = await prisma.highlight.aggregate({
+    _max: { order: true },
+    where: { resumeId },
+  });
 
-    return prisma.highlight.create({
-      data: {
-        resumeId,
-        text: "",
-        order: (maxOrder._max.order || 0) + 1,
-      },
-    });
-  } catch (error) {
-    console.error("Error creating highlight:", error);
-    throw new Error("Failed to create highlight");
-  }
+  const highlight = prisma.highlight.create({
+    data: {
+      resumeId,
+      text: "",
+      order: (maxOrder._max.order || 0) + 1,
+    },
+  });
+
+  revalidatePath(`/me/resumes/${resumeId}/highlights`);
+  return highlight;
 }
 
-export async function updateHighlight(
-  id: string,
-  text: string,
-): Promise<Highlight> {
-  try {
+export async function updateHighlight(resumeId: string, id: string, text: string): Promise<Highlight> {
+  const highlight = prisma.highlight.update({
+    where: { id },
+    data: { text },
+  });
+  revalidatePath(`/me/resumes/${resumeId}/highlights`);
+  return highlight;
+}
+
+export async function updateHighlightOrder(resumeId: string, order: string[]): Promise<void> {
+  const updates = order.map((id, index) => {
     return prisma.highlight.update({
       where: { id },
-      data: { text },
+      data: { order: index + 1 },
     });
-  } catch (error) {
-    console.error("Error updating highlight:", error);
-    throw new Error("Failed to update highlight");
-  }
+  });
+
+  await prisma.$transaction(updates);
+  revalidatePath(`/me/resumes/${resumeId}/highlights`);
 }
 
-export async function updateHighlightOrder(
-  resumeId: string,
-  order: string[],
-): Promise<void> {
-  try {
-    const updates = order.map((id, index) => {
-      return prisma.highlight.update({
-        where: { id },
-        data: { order: index + 1 },
-      });
-    });
-
-    await prisma.$transaction(updates);
-  } catch (error) {
-    console.error(
-      `[updateHighlightOrder] Error updating order for resumeId=${resumeId}:`,
-      error,
-    );
-    throw new Error("Failed to update highlight order");
-  }
-}
-
-export async function deleteHighlight(id: string): Promise<void> {
-  try {
-    await prisma.highlight.delete({ where: { id } });
-  } catch (error) {
-    console.error("Error deleting highlight:", error);
-    throw new Error("Failed to delete highlight");
-  }
+export async function deleteHighlight(resumeId: string, id: string): Promise<void> {
+  await prisma.highlight.delete({ where: { id } });
+  revalidatePath(`/me/resumes/${resumeId}/highlights`);
 }

@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { TechStackFormData } from "./schema";
 import { TechCategory } from "@/generated/prisma/client";
+import { revalidatePath } from "next/cache";
 
 export async function getTechCategories(resumeId: string) {
   return await prisma.techCategory.findMany({
@@ -26,7 +27,7 @@ export async function addTechCategory(resumeId: string) {
     },
   });
 
-  return await prisma.techCategory.create({
+  const techCategory = await prisma.techCategory.create({
     data: {
       resumeId,
       name: "",
@@ -36,16 +37,20 @@ export async function addTechCategory(resumeId: string) {
       stacks: true,
     },
   });
+
+  revalidatePath(`/me/resumes/${resumeId}/tech`);
+  return techCategory;
 }
 
-export async function updateTechCategoryName(categoryId: string, name: string) {
+export async function updateTechCategoryName(resumeId: string, categoryId: string, name: string) {
   await prisma.techCategory.update({
     where: { id: categoryId },
     data: { name },
   });
+  revalidatePath(`/me/resumes/${resumeId}/tech`);
 }
 
-export async function updateTechCategoryOrder(order: TechCategory[]) {
+export async function updateTechCategoryOrder(resumeId: string, order: TechCategory[]) {
   const updates = order.map((category, index) =>
     prisma.techCategory.update({
       where: { id: category.id },
@@ -54,12 +59,14 @@ export async function updateTechCategoryOrder(order: TechCategory[]) {
   );
 
   await prisma.$transaction(updates);
+  revalidatePath(`/me/resumes/${resumeId}/tech`);
 }
 
-export async function deleteTechCategory(categoryId: string) {
+export async function deleteTechCategory(resumeId: string, categoryId: string) {
   await prisma.techCategory.delete({
     where: { id: categoryId },
   });
+  revalidatePath(`/me/resumes/${resumeId}/tech`);
 }
 
 export async function getTechStacks(categoryId: string) {
@@ -69,7 +76,7 @@ export async function getTechStacks(categoryId: string) {
   });
 }
 
-export async function saveTechStacks(categoryId: string, stacks: TechStackFormData[]) {
+export async function saveTechStacks(resumeId: string, categoryId: string, stacks: TechStackFormData[]) {
   await prisma.$transaction([
     prisma.techStack.deleteMany({
       where: { categoryId },
@@ -84,5 +91,6 @@ export async function saveTechStacks(categoryId: string, stacks: TechStackFormDa
     }),
   ]);
 
+  revalidatePath(`/me/resumes/${resumeId}/tech`);
   return await getTechStacks(categoryId);
 }

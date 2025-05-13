@@ -13,8 +13,6 @@ export async function updateResume(id: string, data: ResumeFormData) {
     where: { id },
     data,
   });
-
   revalidatePath(`/me/resumes/${id}`);
-
   return resume;
 }

@@ -47,7 +47,7 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
 
   const handleUpdateCategoryName = async (categoryId: string, name: string) => {
     try {
-      await updateTechCategoryName(categoryId, name);
+      await updateTechCategoryName(resumeId, categoryId, name);
       const updatedCategories = categories.map((category) =>
         category.id === categoryId ? { ...category, name } : category,
       );
@@ -60,7 +60,7 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
 
   const handleDeleteCategory = async (categoryId: string) => {
     try {
-      await deleteTechCategory(categoryId);
+      await deleteTechCategory(resumeId, categoryId);
       const updatedCategories = categories.filter((category) => category.id !== categoryId);
       setCategories(updatedCategories);
       setEditing(null);
@@ -71,7 +71,7 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
 
   const handleSaveStacks = async (categoryId: string, data: TechStackFormData[]) => {
     try {
-      const updatedStacks = await saveTechStacks(categoryId, data);
+      const updatedStacks = await saveTechStacks(resumeId, categoryId, data);
       const updatedCategories = categories.map((category) =>
         category.id === categoryId ? { ...category, stacks: updatedStacks } : category,
       );
@@ -93,7 +93,7 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
     setCategories(newCategories);
 
     try {
-      await updateTechCategoryOrder(newCategories);
+      await updateTechCategoryOrder(resumeId, newCategories);
     } catch (error) {
       logger.handle(error, "TechCategoryListSection");
     }

@@ -2,103 +2,77 @@
 
 import prisma from "@/lib/prisma";
 import { PromotionFormData } from "./schema";
+import { revalidatePath } from "next/cache";
 
 export async function getPromotions(resumeId: string) {
-  try {
-    return prisma.promotion.findMany({
-      where: { resumeId },
-      orderBy: { order: "asc" },
-    });
-  } catch (error) {
-    console.error(
-      `[getPromotions] Error fetching highlights for resumeId=${resumeId}:`,
-      error,
-    );
-    throw new Error("Failed to fetch highlights");
-  }
+  return prisma.promotion.findMany({
+    where: { resumeId },
+    orderBy: { order: "asc" },
+  });
 }
 
 export async function savePromotion(resumeId: string, data: PromotionFormData) {
-  try {
-    const id = data.id;
+  const id = data.id;
 
-    if (!id) {
-      const maxOrder = await prisma.promotion.aggregate({
-        _max: { order: true },
-        where: { resumeId },
-      });
-
-      return await prisma.promotion.create({
-        data: {
-          resumeId: resumeId,
-          order: (maxOrder._max.order ?? 0) + 1,
-          ...data,
-        },
-      });
-    } else {
-      return await prisma.promotion.update({
-        where: { id },
-        data: {
-          ...data,
-        },
-      });
-    }
-  } catch (error) {
-    console.error(
-      `[savePromotion] Error saving promotion for resumeId=${resumeId}:`,
-      error,
-    );
-    throw new Error("Failed to save promotion");
-  }
-}
-
-export async function swapPromotionOrder(
-  resumeId: string,
-  sourceId: string,
-  targetId: string,
-) {
-  try {
-    const promotions = await prisma.promotion.findMany({
-      where: {
-        id: { in: [sourceId, targetId] },
-        resumeId: resumeId,
-      },
-      select: { id: true, order: true },
+  let promotion;
+  if (!id) {
+    const maxOrder = await prisma.promotion.aggregate({
+      _max: { order: true },
+      where: { resumeId },
     });
 
-    if (promotions.length !== 2) {
-      throw new Error("Failed to swap promotion order");
-    }
+    promotion = await prisma.promotion.create({
+      data: {
+        resumeId: resumeId,
+        order: (maxOrder._max.order ?? 0) + 1,
+        ...data,
+      },
+    });
+  } else {
+    promotion = await prisma.promotion.update({
+      where: { id },
+      data: {
+        ...data,
+      },
+    });
+  }
 
-    const [a, b] = promotions;
-    const ops = [
-      prisma.promotion.update({
-        where: { id: a.id },
-        data: { order: b.order },
-      }),
-      prisma.promotion.update({
-        where: { id: b.id },
-        data: { order: a.order },
-      }),
-    ];
+  revalidatePath(`/me/resumes/${resumeId}/promotions`);
+  return promotion;
+}
 
-    await prisma.$transaction(ops);
-  } catch (error) {
-    console.error(`[deletePromotion] Error swaping promotion order:`, error);
+export async function swapPromotionOrder(resumeId: string, sourceId: string, targetId: string) {
+  const promotions = await prisma.promotion.findMany({
+    where: {
+      id: { in: [sourceId, targetId] },
+      resumeId: resumeId,
+    },
+    select: { id: true, order: true },
+  });
+
+  if (promotions.length !== 2) {
     throw new Error("Failed to swap promotion order");
   }
+
+  const [a, b] = promotions;
+  const ops = [
+    prisma.promotion.update({
+      where: { id: a.id },
+      data: { order: b.order },
+    }),
+    prisma.promotion.update({
+      where: { id: b.id },
+      data: { order: a.order },
+    }),
+  ];
+
+  await prisma.$transaction(ops);
+  revalidatePath(`/me/resumes/${resumeId}/promotions`);
 }
 
-export async function deletePromotion(id: string) {
-  try {
-    return await prisma.promotion.delete({
-      where: { id },
-    });
-  } catch (error) {
-    console.error(
-      `[deletePromotion] Error deleting promotion with id=${id}:`,
-      error,
-    );
-    throw new Error("Failed to delete promotion");
-  }
+export async function deletePromotion(resumeId: string, id: string) {
+  await prisma.promotion.delete({
+    where: { id },
+  });
+  revalidatePath(`/me/resumes/${resumeId}/promotions`);
 }

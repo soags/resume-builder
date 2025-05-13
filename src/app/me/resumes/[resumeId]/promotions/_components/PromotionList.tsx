@@ -2,12 +2,7 @@
 
 import { Promotion } from "@/generated/prisma/client";
 import { useState } from "react";
-import {
-  deletePromotion,
-  getPromotions,
-  savePromotion,
-  swapPromotionOrder,
-} from "../actions";
+import { deletePromotion, getPromotions, savePromotion, swapPromotionOrder } from "../actions";
 import { PromotionFormData } from "../schema";
 import { PromotionDialog } from "./PromotionDialog";
 import { Button } from "@/components/ui/button";
@@ -21,13 +16,7 @@ const PromotionItem = dynamic<PromotionItemProps>(
   { ssr: false },
 );
 
-export function PromotionList({
-  resumeId,
-  initialPromotions,
-}: {
-  resumeId: string;
-  initialPromotions: Promotion[];
-}) {
+export function PromotionList({ resumeId, initialPromotions }: { resumeId: string; initialPromotions: Promotion[] }) {
   const [promotions, setPromotions] = useState(initialPromotions);
   const [editing, setEditing] = useState<PromotionFormData | null>(null);
 
@@ -54,7 +43,7 @@ export function PromotionList({
 
   const handleDelete = async (id: string) => {
     withReload(async () => {
-      await deletePromotion(id);
+      await deletePromotion(resumeId, id);
     });
   };
 
