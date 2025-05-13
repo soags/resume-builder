@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { generateSlugFromEmail } from "@/auth";
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient, User } from "@/generated/prisma/client";
 import { nanoid } from "nanoid";
 
 const prisma = new PrismaClient();
@@ -38,64 +38,16 @@ async function main() {
     },
   });
 
-  const resume = await prisma.resume.create({
-    data: {
-      userId: user.id,
-      slug: nanoid(16),
-      title: "職務経歴書",
-      name: "曽我 周平",
-      label: "技術と誠実を愛するエンジニア",
-      github: "https://github.com/soags",
-      qiita: "https://qiita.com/soags",
-      zenn: "https://zenn.dev/soags",
-      speakerDeck: "",
-      slideShare: "",
-
-      techCategory: {
-        create: [
-          {
-            name: "フロントエンド",
-            order: 1,
-            stacks: {
-              create: [
-                { name: "react", label: "React" },
-                { name: "next", label: "Next.js" },
-                { name: "tailwind", label: "Tailwind CSS" },
-              ],
-            },
-          },
-          {
-            name: "バックエンド",
-            order: 2,
-            stacks: {
-              create: [
-                { name: "aspnetcore", label: "ASP.NET Core" },
-                { name: "laravel", label: "Laravel" },
-                { name: "node", label: "Node.js" },
-              ],
-            },
-          },
-          {
-            name: "インフラ・クラウド",
-            order: 3,
-            stacks: {
-              create: [
-                { name: "aws", label: "AWS" },
-                { name: "docker", label: "Docker" },
-                { name: "windowsserver", label: "Windows Server" },
-              ],
-            },
-          },
-        ],
+  Array.from({ length: 50 }).forEach(async (_, i) => {
+    await prisma.resume.create({
+      data: {
+        userId: user.id,
+        slug: nanoid(16),
+        title: "職務経歴書",
+        name: "曽我 周平",
+        label: "",
       },
-    },
-    include: {
-      techCategory: {
-        include: {
-          stacks: true,
-        },
-      },
-    },
+    });
   });
 
   console.log("🌸 Seed completed.");

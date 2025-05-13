@@ -8,7 +8,7 @@ export default async function MeLayout({ children }: { children: React.ReactNode
 
   return (
     <SidebarProvider>
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen w-full">
         <SiteHeader />
         <div className="flex">
           <SidebarNav />
