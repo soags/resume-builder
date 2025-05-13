@@ -14,6 +14,14 @@ export const { handlers, auth } = NextAuth({
       allowDangerousEmailAccountLinking: true,
     }),
   ],
+  pages: {
+    signIn: "/login",
+  },
+  callbacks: {
+    redirect: async () => {
+      return "/me/resumes";
+    },
+  },
 });
 
 function AppPrismaAdapter(): Adapter {

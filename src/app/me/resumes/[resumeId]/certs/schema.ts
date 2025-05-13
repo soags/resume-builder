@@ -1,4 +1,4 @@
-import { urlOrEmpty } from "@/lib/zod";
+import { zz } from "@/lib/zod";
 import { z } from "zod";
 
 export const certSchema = z.object({
@@ -6,7 +6,7 @@ export const certSchema = z.object({
   year: z.number().int().positive(),
   month: z.number().int().positive(),
   issuer: z.string(),
-  url: urlOrEmpty,
+  url: zz.urlOrEmpty(),
 });
 
 export type CertFormData = z.infer<typeof certSchema>;

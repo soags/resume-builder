@@ -1,4 +1,4 @@
-import { urlOrEmpty } from "@/lib/zod";
+import { zz } from "@/lib/zod";
 import { z } from "zod";
 
 export const resumeSchema = z.object({
@@ -6,11 +6,11 @@ export const resumeSchema = z.object({
   title: z.string().min(1),
   name: z.string().min(1),
   label: z.string(),
-  github: urlOrEmpty,
-  qiita: urlOrEmpty,
-  zenn: urlOrEmpty,
-  speakerDeck: urlOrEmpty,
-  slideShare: urlOrEmpty,
+  github: zz.urlOrEmpty(),
+  qiita: zz.urlOrEmpty(),
+  zenn: zz.urlOrEmpty(),
+  speakerDeck: zz.urlOrEmpty(),
+  slideShare: zz.urlOrEmpty(),
 });
 
 export type ResumeFormData = z.infer<typeof resumeSchema>;

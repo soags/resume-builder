@@ -12,7 +12,7 @@ export function GoogleLoginButton() {
   const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
-      await signIn("google", { redirectTo: "/me/resumes" });
+      await signIn("google");
     } catch (error) {
       logger.handle(error, "Google login");
     } finally {
