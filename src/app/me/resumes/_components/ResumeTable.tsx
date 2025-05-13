@@ -15,7 +15,7 @@ export function ResumeTable({ items }: ResumeTableProps) {
   const router = useRouter();
 
   const handleEdit = (resumeId: string) => {
-    router.push(`/me/resumes/${resumeId}/basics`);
+    router.push(`/me/resumes/${resumeId}`);
   };
 
   return (

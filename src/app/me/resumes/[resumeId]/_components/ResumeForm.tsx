@@ -3,19 +3,20 @@
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { BasicsFormData, basicsSchema } from "../schema";
 import { Resume } from "@/generated/prisma/client";
 import { useDebouncedCallback } from "use-debounce";
-import { updateBasics } from "../actions";
 import { Input } from "@/components/ui/input";
+import { ResumeFormData, resumeSchema } from "../schema";
+import { updateResume } from "../actions";
+import { logger } from "@/lib/logger";
 
-type BasicsFormProps = {
+type ResumeFormProps = {
   resume: Resume;
 };
 
-export function BasicsForm({ resume }: BasicsFormProps) {
+export function ResumeForm({ resume }: ResumeFormProps) {
   const form = useForm({
-    resolver: zodResolver(basicsSchema),
+    resolver: zodResolver(resumeSchema),
     defaultValues: resume,
   });
 
@@ -26,11 +27,11 @@ export function BasicsForm({ resume }: BasicsFormProps) {
     };
   };
 
-  const handleSubmit = async (data: BasicsFormData) => {
+  const handleSubmit = async (data: ResumeFormData) => {
     try {
-      await updateBasics(resume.id, data);
+      await updateResume(resume.id, data);
     } catch (error) {
-      console.error(`[Basics] Error updating basics:`, error);
+      logger.handle(error, "ResumeForm");
     }
   };
 
@@ -48,9 +49,23 @@ export function BasicsForm({ resume }: BasicsFormProps) {
             <FormItem>
               <FormLabel>職務経歴書タイトル</FormLabel>
               <FormControl>
-                <Input placeholder="職務経歴書" onBlur={handleBlur(onBlur)} {...field} />
+                <Input onBlur={handleBlur(onBlur)} {...field} />
               </FormControl>
-              <FormDescription>※ 管理用のタイトルです。職務経歴書には表示されません。</FormDescription>
+              <FormDescription>管理用のタイトルです。職務経歴書には表示されません。</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="slug"
+          render={({ field: { onBlur, ...field } }) => (
+            <FormItem>
+              <FormLabel>Slug</FormLabel>
+              <FormControl>
+                <Input onBlur={handleBlur(onBlur)} {...field} />
+              </FormControl>
+              <FormDescription>公開用URL(/r/:userSlug/:resumeSlug/)に使用するSlugです。</FormDescription>
               <FormMessage />
             </FormItem>
           )}

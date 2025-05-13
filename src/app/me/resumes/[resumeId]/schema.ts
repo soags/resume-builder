@@ -1,7 +1,8 @@
 import { urlOrEmpty } from "@/lib/zod";
 import { z } from "zod";
 
-export const basicsSchema = z.object({
+export const resumeSchema = z.object({
+  slug: z.string().min(1),
   title: z.string().min(1),
   name: z.string().min(1),
   label: z.string(),
@@ -12,4 +13,4 @@ export const basicsSchema = z.object({
   slideShare: urlOrEmpty,
 });
 
-export type BasicsFormData = z.infer<typeof basicsSchema>;
+export type ResumeFormData = z.infer<typeof resumeSchema>;
