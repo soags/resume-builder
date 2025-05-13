@@ -12,6 +12,9 @@ export default async function MeLayout({ children }: { children: React.ReactNode
     return redirect("/login");
   }
   const resumes = await getResumes(session.user.id);
+  if (typeof resumes === "undefined") {
+    return redirect("/me/resumes");
+  }
 
   return (
     <SidebarProvider>

@@ -14,6 +14,9 @@ export default async function ResumesPage() {
   }
 
   const resumes = await getResumes(session.user.id!);
+  if (typeof resumes === "undefined") {
+    return redirect("/me/resumes");
+  }
 
   return (
     <div className="flex flex-col p-6">

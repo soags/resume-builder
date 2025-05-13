@@ -6,8 +6,8 @@ import { CertFormData } from "./schema";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
-export const getCerts = (resumeId: string) =>
-  withServerLogging(
+export const getCerts = async (resumeId: string) =>
+  await withServerLogging(
     async (): Promise<Cert[]> =>
       prisma.cert.findMany({
         where: { resumeId },
@@ -16,8 +16,8 @@ export const getCerts = (resumeId: string) =>
     "getCerts",
   );
 
-export const addCert = (resumeId: string, data: CertFormData) =>
-  withServerLogging(async (): Promise<Cert> => {
+export const addCert = async (resumeId: string, data: CertFormData) =>
+  await withServerLogging(async (): Promise<Cert> => {
     const cert = prisma.cert.create({
       data: {
         resumeId,
@@ -32,8 +32,8 @@ export const addCert = (resumeId: string, data: CertFormData) =>
     return cert;
   }, "addCert");
 
-export const updateCert = (id: string, data: CertFormData) =>
-  withServerLogging(async (): Promise<Cert> => {
+export const updateCert = async (id: string, data: CertFormData) =>
+  await withServerLogging(async (): Promise<Cert> => {
     const cert = prisma.cert.update({
       where: { id },
       data: {
@@ -48,8 +48,8 @@ export const updateCert = (id: string, data: CertFormData) =>
     return cert;
   }, "updateCert");
 
-export const deleteCert = (id: string) =>
-  withServerLogging(async (): Promise<void> => {
+export const deleteCert = async (id: string) =>
+  await withServerLogging(async (): Promise<void> => {
     await prisma.cert.delete({ where: { id } });
     revalidatePath("/me/resumes/[resumeId]/certs");
   }, "deleteCert");

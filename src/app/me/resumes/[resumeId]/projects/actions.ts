@@ -5,8 +5,8 @@ import { ProjectFormData, ProjectWithStacks } from "./schema";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
-export const getProjects = (resumeId: string) =>
-  withServerLogging(
+export const getProjects = async (resumeId: string) =>
+  await withServerLogging(
     async (): Promise<ProjectWithStacks[]> =>
       prisma.project.findMany({
         where: { resumeId },
@@ -16,8 +16,8 @@ export const getProjects = (resumeId: string) =>
     "getProjects",
   );
 
-export const createProject = (resumeId: string, data: ProjectFormData) =>
-  withServerLogging(async (): Promise<ProjectWithStacks> => {
+export const createProject = async (resumeId: string, data: ProjectFormData) =>
+  await withServerLogging(async (): Promise<ProjectWithStacks> => {
     const lastProject = await prisma.project.findFirst({
       where: { resumeId },
       orderBy: { order: "desc" },
@@ -47,8 +47,8 @@ export const createProject = (resumeId: string, data: ProjectFormData) =>
     return project;
   }, "createProject");
 
-export const updateProject = (resumeId: string, projectId: string, data: ProjectFormData) =>
-  withServerLogging(async (): Promise<ProjectWithStacks> => {
+export const updateProject = async (resumeId: string, projectId: string, data: ProjectFormData) =>
+  await withServerLogging(async (): Promise<ProjectWithStacks> => {
     // 既存のスタックを削除
     await prisma.projectTechStack.deleteMany({
       where: { projectId },
@@ -75,8 +75,11 @@ export const updateProject = (resumeId: string, projectId: string, data: Project
     return project;
   }, "updateProject");
 
-export const updateProjectOrder = (resumeId: string, projects: { id: string; order: number }[]) =>
-  withServerLogging(async (): Promise<void> => {
+export const updateProjectOrder = async (
+  resumeId: string,
+  projects: { id: string; order: number }[],
+) =>
+  await withServerLogging(async (): Promise<void> => {
     await Promise.all(
       projects.map((project) =>
         prisma.project.update({
@@ -89,8 +92,8 @@ export const updateProjectOrder = (resumeId: string, projects: { id: string; ord
     revalidatePath(`/me/resumes/${resumeId}/projects`);
   }, "updateProjectOrder");
 
-export const deleteProject = (resumeId: string, projectId: string) =>
-  withServerLogging(async (): Promise<void> => {
+export const deleteProject = async (resumeId: string, projectId: string) =>
+  await withServerLogging(async (): Promise<void> => {
     await prisma.project.delete({
       where: { id: projectId },
     });

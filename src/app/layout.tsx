@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="ja" className={`${notoSansJP.variable} antialiased`}>
       <body>
         {children}
-        <Toaster />
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

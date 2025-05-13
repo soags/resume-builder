@@ -5,8 +5,8 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
-export const getHighlights = (resumeId: string) =>
-  withServerLogging(
+export const getHighlights = async (resumeId: string) =>
+  await withServerLogging(
     async (): Promise<Highlight[]> =>
       prisma.highlight.findMany({
         where: { resumeId },
@@ -15,8 +15,8 @@ export const getHighlights = (resumeId: string) =>
     "getHighlights",
   );
 
-export const addHighlight = (resumeId: string) =>
-  withServerLogging(async (): Promise<Highlight> => {
+export const addHighlight = async (resumeId: string) =>
+  await withServerLogging(async (): Promise<Highlight> => {
     const maxOrder = await prisma.highlight.aggregate({
       _max: { order: true },
       where: { resumeId },
@@ -34,8 +34,8 @@ export const addHighlight = (resumeId: string) =>
     return highlight;
   }, "addHighlight");
 
-export const updateHighlight = (resumeId: string, id: string, text: string) =>
-  withServerLogging(async (): Promise<Highlight> => {
+export const updateHighlight = async (resumeId: string, id: string, text: string) =>
+  await withServerLogging(async (): Promise<Highlight> => {
     const highlight = prisma.highlight.update({
       where: { id },
       data: { text },
@@ -44,8 +44,8 @@ export const updateHighlight = (resumeId: string, id: string, text: string) =>
     return highlight;
   }, "updateHighlight");
 
-export const updateHighlightOrder = (resumeId: string, order: string[]) =>
-  withServerLogging(async (): Promise<void> => {
+export const updateHighlightOrder = async (resumeId: string, order: string[]) =>
+  await withServerLogging(async (): Promise<void> => {
     const updates = order.map((id, index) => {
       return prisma.highlight.update({
         where: { id },
@@ -57,8 +57,8 @@ export const updateHighlightOrder = (resumeId: string, order: string[]) =>
     revalidatePath(`/me/resumes/${resumeId}/highlights`);
   }, "updateHighlightOrder");
 
-export const deleteHighlight = (resumeId: string, id: string) =>
-  withServerLogging(async (): Promise<void> => {
+export const deleteHighlight = async (resumeId: string, id: string) =>
+  await withServerLogging(async (): Promise<void> => {
     await prisma.highlight.delete({ where: { id } });
     revalidatePath(`/me/resumes/${resumeId}/highlights`);
   }, "deleteHighlight");

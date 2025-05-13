@@ -5,8 +5,8 @@ import { NewResumeFormData } from "./schema";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
-export const getResumes = (userId: string) =>
-  withServerLogging(
+export const getResumes = async (userId: string) =>
+  await withServerLogging(
     async () =>
       await prisma.resume.findMany({
         where: { userId },
@@ -15,8 +15,8 @@ export const getResumes = (userId: string) =>
     "getResumes",
   );
 
-export const createResume = (userId: string, data: NewResumeFormData) =>
-  withServerLogging(async () => {
+export const createResume = async (userId: string, data: NewResumeFormData) =>
+  await withServerLogging(async () => {
     const resume = await prisma.resume.create({
       data: {
         userId,

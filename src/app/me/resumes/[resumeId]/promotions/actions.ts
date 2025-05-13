@@ -5,8 +5,8 @@ import { PromotionFormData } from "./schema";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
-export const getPromotions = (resumeId: string) =>
-  withServerLogging(
+export const getPromotions = async (resumeId: string) =>
+  await withServerLogging(
     async () =>
       prisma.promotion.findMany({
         where: { resumeId },
@@ -15,8 +15,8 @@ export const getPromotions = (resumeId: string) =>
     "getPromotions",
   );
 
-export const savePromotion = (resumeId: string, data: PromotionFormData) =>
-  withServerLogging(async () => {
+export const savePromotion = async (resumeId: string, data: PromotionFormData) =>
+  await withServerLogging(async () => {
     const id = data.id;
 
     let promotion;
@@ -46,8 +46,8 @@ export const savePromotion = (resumeId: string, data: PromotionFormData) =>
     return promotion;
   }, "savePromotion");
 
-export const swapPromotionOrder = (resumeId: string, sourceId: string, targetId: string) =>
-  withServerLogging(async () => {
+export const swapPromotionOrder = async (resumeId: string, sourceId: string, targetId: string) =>
+  await withServerLogging(async () => {
     const promotions = await prisma.promotion.findMany({
       where: {
         id: { in: [sourceId, targetId] },
@@ -76,8 +76,8 @@ export const swapPromotionOrder = (resumeId: string, sourceId: string, targetId:
     revalidatePath(`/me/resumes/${resumeId}/promotions`);
   }, "swapPromotionOrder");
 
-export const deletePromotion = (resumeId: string, id: string) =>
-  withServerLogging(async () => {
+export const deletePromotion = async (resumeId: string, id: string) =>
+  await withServerLogging(async () => {
     await prisma.promotion.delete({
       where: { id },
     });

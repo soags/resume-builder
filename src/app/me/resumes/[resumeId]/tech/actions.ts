@@ -6,8 +6,8 @@ import { TechCategory } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
-export const getTechCategories = (resumeId: string) =>
-  withServerLogging(
+export const getTechCategories = async (resumeId: string) =>
+  await withServerLogging(
     async () =>
       await prisma.techCategory.findMany({
         where: { resumeId },
@@ -23,8 +23,8 @@ export const getTechCategories = (resumeId: string) =>
     "getTechCategories",
   );
 
-export const addTechCategory = (resumeId: string) =>
-  withServerLogging(async () => {
+export const addTechCategory = async (resumeId: string) =>
+  await withServerLogging(async () => {
     const maxOrder = await prisma.techCategory.aggregate({
       where: { resumeId },
       _max: {
@@ -47,8 +47,8 @@ export const addTechCategory = (resumeId: string) =>
     return techCategory;
   }, "addTechCategory");
 
-export const updateTechCategoryName = (resumeId: string, categoryId: string, name: string) =>
-  withServerLogging(async () => {
+export const updateTechCategoryName = async (resumeId: string, categoryId: string, name: string) =>
+  await withServerLogging(async () => {
     await prisma.techCategory.update({
       where: { id: categoryId },
       data: { name },
@@ -56,8 +56,8 @@ export const updateTechCategoryName = (resumeId: string, categoryId: string, nam
     revalidatePath(`/me/resumes/${resumeId}/tech`);
   }, "updateTechCategoryName");
 
-export const updateTechCategoryOrder = (resumeId: string, order: TechCategory[]) =>
-  withServerLogging(async () => {
+export const updateTechCategoryOrder = async (resumeId: string, order: TechCategory[]) =>
+  await withServerLogging(async () => {
     const updates = order.map((category, index) =>
       prisma.techCategory.update({
         where: { id: category.id },
@@ -69,16 +69,16 @@ export const updateTechCategoryOrder = (resumeId: string, order: TechCategory[])
     revalidatePath(`/me/resumes/${resumeId}/tech`);
   }, "updateTechCategoryOrder");
 
-export const deleteTechCategory = (resumeId: string, categoryId: string) =>
-  withServerLogging(async () => {
+export const deleteTechCategory = async (resumeId: string, categoryId: string) =>
+  await withServerLogging(async () => {
     await prisma.techCategory.delete({
       where: { id: categoryId },
     });
     revalidatePath(`/me/resumes/${resumeId}/tech`);
   }, "deleteTechCategory");
 
-export const getTechStacks = (categoryId: string) =>
-  withServerLogging(
+export const getTechStacks = async (categoryId: string) =>
+  await withServerLogging(
     async () =>
       await prisma.techStack.findMany({
         where: { categoryId },
@@ -87,8 +87,12 @@ export const getTechStacks = (categoryId: string) =>
     "getTechStacks",
   );
 
-export const saveTechStacks = (resumeId: string, categoryId: string, stacks: TechStackFormData[]) =>
-  withServerLogging(async () => {
+export const saveTechStacks = async (
+  resumeId: string,
+  categoryId: string,
+  stacks: TechStackFormData[],
+) =>
+  await withServerLogging(async () => {
     await prisma.$transaction([
       prisma.techStack.deleteMany({
         where: { categoryId },
