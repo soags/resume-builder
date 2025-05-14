@@ -1,14 +1,19 @@
 "use client";
 
-import { HighlightForm, HighlightFormProps } from "./HighlightForm";
+import { HighlightItem } from "./HighlightItem";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ComponentPropsWithoutRef } from "react";
 
-type SortableHighlightFormProps = Omit<HighlightFormProps, "dragHandleProps">;
+type SortableHighlightItemProps = {
+  id: string;
+  index: number;
+  dragHandleProps?: ComponentPropsWithoutRef<"div">;
+};
 
-export function SortableHighlightForm({ highlight, ...props }: SortableHighlightFormProps) {
+export function SortableHighlightItem({ id, ...props }: SortableHighlightItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: highlight.id,
+    id,
   });
 
   const style: React.CSSProperties = {
@@ -23,7 +28,7 @@ export function SortableHighlightForm({ highlight, ...props }: SortableHighlight
 
   return (
     <div ref={setNodeRef} style={style}>
-      <HighlightForm highlight={highlight} dragHandleProps={dragHandleProps} {...props} />
+      <HighlightItem dragHandleProps={dragHandleProps} {...props} />
     </div>
   );
 }

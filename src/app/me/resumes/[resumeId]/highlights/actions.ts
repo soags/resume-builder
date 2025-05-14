@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
+import { HighlightListFormValues } from "./schema";
 
 export const getHighlights = async (resumeId: string) =>
   await withServerLogging(async () => {
@@ -14,59 +15,57 @@ export const getHighlights = async (resumeId: string) =>
     return { ok: true, data: highlights };
   }, "getHighlights");
 
-export const addHighlight = async (resumeId: string) =>
+export const saveHighlights = async (resumeId: string, values: HighlightListFormValues) =>
   await withServerLogging(async () => {
-    const maxOrder = await prisma.highlight.aggregate({
-      _max: { order: true },
+    // Order をセット
+    const items = values.highlights;
+    const activeItems = items.filter((highlight) => !highlight.isDeleted);
+    activeItems.forEach((item, index) => {
+      item.order = index + 1;
+    });
+
+    // 登録処理
+    await prisma.$transaction(async (tx) => {
+      for (const item of items) {
+        if (item.isNew && item.isDeleted) {
+          // SKIP
+          continue;
+        }
+
+        if (item.isNew && !item.isDeleted) {
+          // INSERT
+          await tx.highlight.create({
+            data: {
+              resumeId,
+              text: item.text,
+              order: item.order,
+            },
+          });
+        } else if (!item.isNew && item.isDeleted) {
+          // DELETE
+          await tx.highlight.delete({
+            where: { id: item.id },
+          });
+        } else if (!item.isNew && !item.isDeleted) {
+          // UPDATE
+          await tx.highlight.update({
+            where: { id: item.id },
+            data: {
+              text: item.text,
+              order: item.order,
+            },
+          });
+        }
+      }
+    });
+
+    revalidatePath(`/me/resumes/${resumeId}/highlights`);
+
+    // 再取得
+    const newHighlights = await prisma.highlight.findMany({
       where: { resumeId },
+      orderBy: { order: "asc" },
     });
 
-    const highlight = await prisma.highlight.create({
-      data: {
-        resumeId,
-        text: "",
-        order: (maxOrder._max.order || 0) + 1,
-      },
-    });
-
-    revalidatePath(`/me/resumes/${resumeId}/highlights`);
-
-    return { ok: true, data: highlight };
-  }, "addHighlight");
-
-export const updateHighlight = async (resumeId: string, id: string, text: string) =>
-  await withServerLogging(async () => {
-    const highlight = await prisma.highlight.update({
-      where: { id },
-      data: { text },
-    });
-
-    revalidatePath(`/me/resumes/${resumeId}/highlights`);
-
-    return { ok: true, data: highlight };
-  }, "updateHighlight");
-
-export const updateHighlightOrder = async (resumeId: string, order: string[]) =>
-  await withServerLogging(async () => {
-    const updates = order.map((id, index) => {
-      return prisma.highlight.update({
-        where: { id },
-        data: { order: index + 1 },
-      });
-    });
-
-    await prisma.$transaction(updates);
-
-    revalidatePath(`/me/resumes/${resumeId}/highlights`);
-
-    return { ok: true, data: null };
-  }, "updateHighlightOrder");
-
-export const deleteHighlight = async (resumeId: string, id: string) =>
-  await withServerLogging(async () => {
-    await prisma.highlight.delete({ where: { id } });
-
-    revalidatePath(`/me/resumes/${resumeId}/highlights`);
-
-    return { ok: true, data: null };
-  }, "deleteHighlight");
+    return { ok: true, data: newHighlights };
+  }, "saveHighlights");

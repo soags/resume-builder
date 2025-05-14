@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { Header } from "../_components/Header";
-import { HighlightList } from "./_components/HighlightList";
+import { HighlightListForm } from "./_components/HighlightListForm";
 import { getHighlights } from "./actions";
+import PageLayout from "@/app/me/_components/PageLayout";
 
 export default async function HighlightsPage({
   params,
@@ -10,15 +10,14 @@ export default async function HighlightsPage({
 }) {
   const { resumeId } = await params;
 
-  const highlights = await getHighlights(resumeId);
-  if (typeof highlights === "undefined") {
+  const result = await getHighlights(resumeId);
+  if (!result.ok || !result.data) {
     return redirect("/me/resumes");
   }
 
   return (
-    <>
-      <Header title="ハイライト" />
-      <HighlightList resumeId={resumeId} initial={highlights} />
-    </>
+    <PageLayout title="ハイライト">
+      <HighlightListForm resumeId={resumeId} defaultHighlights={result.data} />
+    </PageLayout>
   );
 }
