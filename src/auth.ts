@@ -6,6 +6,7 @@ import slugify from "slugify";
 import { nanoid } from "nanoid";
 import type { Adapter, AdapterUser } from "@auth/core/adapters";
 import { PrismaClientKnownRequestError } from "./generated/prisma/client/runtime/library";
+import { logger } from "./lib/logger";
 
 export const { handlers, auth } = NextAuth({
   adapter: AppPrismaAdapter(),
@@ -59,9 +60,11 @@ function AppPrismaAdapter(): Adapter {
               continue;
             }
           }
+          logger.handle(e, "AppPrismaAdapter.createUser");
           throw e;
         }
       }
+      logger.error("AppPrismaAdapter.createUser", { lastError });
       throw new Error(`Failed to create user after ${MAX_RETRIES} retries: ${lastError}`);
     },
   };

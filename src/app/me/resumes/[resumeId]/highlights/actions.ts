@@ -21,7 +21,7 @@ export const addHighlight = async (resumeId: string) =>
       where: { resumeId },
     });
 
-    const highlight = prisma.highlight.create({
+    const highlight = await prisma.highlight.create({
       data: {
         resumeId,
         text: "",
@@ -36,7 +36,7 @@ export const addHighlight = async (resumeId: string) =>
 
 export const updateHighlight = async (resumeId: string, id: string, text: string) =>
   await withServerLogging(async () => {
-    const highlight = prisma.highlight.update({
+    const highlight = await prisma.highlight.update({
       where: { id },
       data: { text },
     });

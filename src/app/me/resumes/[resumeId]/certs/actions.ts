@@ -17,7 +17,7 @@ export const getCerts = async (resumeId: string) =>
 
 export const addCert = async (resumeId: string, data: CertFormData) =>
   await withServerLogging(async () => {
-    const cert = prisma.cert.create({
+    const cert = await prisma.cert.create({
       data: {
         resumeId,
         name: data.name,
@@ -35,7 +35,7 @@ export const addCert = async (resumeId: string, data: CertFormData) =>
 
 export const updateCert = async (id: string, data: CertFormData) =>
   await withServerLogging(async () => {
-    const cert = prisma.cert.update({
+    const cert = await prisma.cert.update({
       where: { id },
       data: {
         name: data.name,
