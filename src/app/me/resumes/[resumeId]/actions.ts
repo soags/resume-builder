@@ -18,8 +18,8 @@ export const updateResume = async (
   id: string,
   data: ResumeFormData,
   userId: string,
-): Promise<Result<Resume>> => {
-  return await withServerLogging(async () => {
+): Promise<Result<Resume>> =>
+  await withServerLogging(async () => {
     const existing = await prisma.resume.findFirst({
       where: {
         userId,
@@ -44,16 +44,16 @@ export const updateResume = async (
 
     return { ok: true, data: resume };
   }, "updateResume");
-};
 
-export const checkSlugDuplicate = async (userId: string, slug: string, resumeId?: string) => {
-  const exists = await prisma.resume.findFirst({
-    where: {
-      userId,
-      slug,
-      NOT: resumeId ? { id: resumeId } : undefined,
-    },
-  });
+export const checkSlugDuplicate = async (userId: string, slug: string, resumeId?: string) =>
+  await withServerLogging(async () => {
+    const exists = await prisma.resume.findFirst({
+      where: {
+        userId,
+        slug,
+        NOT: resumeId ? { id: resumeId } : undefined,
+      },
+    });
 
-  return { isDuplicate: !!exists };
-};
+    return { ok: true, data: !!exists };
+  }, "checkSlugDuplicate");

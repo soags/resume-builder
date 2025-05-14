@@ -42,7 +42,7 @@ export function ResumeForm({ userId, resume }: ResumeFormProps) {
 
     const check = async () => {
       const result = await checkSlugDuplicate(userId, debouncedSlug, resume.id);
-      if (result.isDuplicate) {
+      if (result.ok && result.data) {
         form.setError("slug", {
           type: "manual",
           message: "このSlugはすでに使用されています",
@@ -56,7 +56,13 @@ export function ResumeForm({ userId, resume }: ResumeFormProps) {
   }, [debouncedSlug, form, resume.id, userId]);
 
   const handleSubmit = async (data: ResumeFormData) => {
-    await withClientFeedback(() => updateResume(resume.id, data, userId));
+    await withClientFeedback(async () => {
+      const result = await updateResume(resume.id, data, userId);
+      if (result.ok) {
+        form.reset(result.data);
+      }
+      return result;
+    });
   };
 
   return (
