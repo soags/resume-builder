@@ -1,15 +1,14 @@
+import { Result } from "@/types";
 import { logger } from "./logger";
 
 export async function withServerLogging<T>(
-  fn: () => Promise<T>,
+  fn: () => Promise<Result<T>>,
   context?: string,
-  onError?: () => void,
-): Promise<T | undefined> {
+): Promise<Result<T>> {
   try {
     return await fn();
   } catch (error) {
     logger.handle(error, context);
-    onError?.();
-    return undefined;
+    return { ok: false, error: { code: "UNKNOWN", message: "予期しないエラーが発生しました" } };
   }
 }

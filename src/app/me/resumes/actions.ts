@@ -6,14 +6,14 @@ import { revalidatePath } from "next/cache";
 import { withServerLogging } from "@/lib/withServerLogging";
 
 export const getResumes = async (userId: string) =>
-  await withServerLogging(
-    async () =>
-      await prisma.resume.findMany({
-        where: { userId },
-        orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
-      }),
-    "getResumes",
-  );
+  await withServerLogging(async () => {
+    const resumes = await prisma.resume.findMany({
+      where: { userId },
+      orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+    });
+
+    return { ok: true, data: resumes };
+  }, "getResumes");
 
 export const createResume = async (userId: string, data: NewResumeFormData) =>
   await withServerLogging(async () => {
@@ -23,6 +23,8 @@ export const createResume = async (userId: string, data: NewResumeFormData) =>
         ...data,
       },
     });
+
     revalidatePath("/me/resumes");
-    return resume;
+
+    return { ok: true, data: resume };
   }, "createResume");
