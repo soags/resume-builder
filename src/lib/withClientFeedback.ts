@@ -17,18 +17,17 @@ export async function withClientFeedback<T>(
 
   onLoadingChange?.(true);
 
-  const promise = fn();
+  const result = await fn();
 
-  const result = await toast.promise(promise, {
-    loading: "保存中...",
-    success: (result) => (result.ok ? successMessage : undefined),
-    error: (result) =>
-      !result.ok
-        ? (errorMap[result.error.code] ?? result.error.message)
-        : "予期しないエラーが発生しました",
-  });
+  if (result.ok) {
+    toast.success(successMessage);
+  } else {
+    toast.error(
+      errorMap[result.error.code] ?? result.error.message ?? "予期しないエラーが発生しました",
+    );
+  }
 
   onLoadingChange?.(false);
 
-  return result.unwrap();
+  return result;
 }
