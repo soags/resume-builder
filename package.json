@@ -9,8 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "check": "npm run lint && npm run typecheck && npm run format",
-    "prisma:reset": "reset-prisma.cmd"
+    "check": "npm run lint && npm run typecheck && npm run format"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
