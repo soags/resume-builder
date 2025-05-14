@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { getResume } from "./actions";
 import { redirect } from "next/navigation";
 import { SummaryForm } from "./_components/SummaryForm";
+import PageLayout from "@/app/me/_components/PageLayout";
 
 export default async function ResumePage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = await params;
@@ -16,13 +17,8 @@ export default async function ResumePage({ params }: { params: Promise<{ resumeI
   }
 
   return (
-    <div className="flex flex-col p-6">
-      <div className="mb-8 flex items-center justify-between px-4">
-        <h2 className="text-2xl font-bold">職務要約</h2>
-      </div>
-      <div className="flex justify-center">
-        <SummaryForm resume={resume.data} />
-      </div>
-    </div>
+    <PageLayout title="職務要約">
+      <SummaryForm resume={resume.data} />
+    </PageLayout>
   );
 }
