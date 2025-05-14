@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 
 export default async function ResumePage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = await params;
-
   const resume = await getResume(resumeId);
   if (!resume) {
     redirect("/me/resumes");
@@ -16,9 +15,7 @@ export default async function ResumePage({ params }: { params: Promise<{ resumeI
         <h2 className="text-2xl font-bold">職務経歴書</h2>
       </div>
       <div className="flex justify-center">
-        <div className="w-full max-w-2xl overflow-x-auto">
-          <ResumeForm resume={resume} />
-        </div>
+        <ResumeForm resume={resume} />
       </div>
     </div>
   );

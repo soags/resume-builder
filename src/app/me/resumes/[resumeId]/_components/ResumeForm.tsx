@@ -12,28 +12,23 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Resume } from "@/generated/prisma/client";
-import { useDebouncedCallback } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { ResumeFormData, resumeSchema } from "../schema";
 import { updateResume } from "../actions";
 import { withClientLogging } from "@/lib/withClientLogging";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 type ResumeFormProps = {
   resume: Resume;
 };
 
 export function ResumeForm({ resume }: ResumeFormProps) {
-  const form = useForm({
+  const form = useForm<ResumeFormData>({
     resolver: zodResolver(resumeSchema),
     defaultValues: resume,
   });
-
-  const handleBlur = (onBlur: () => void) => {
-    return () => {
-      onBlur();
-      autoSubmit();
-    };
-  };
 
   const handleSubmit = async (data: ResumeFormData) => {
     await withClientLogging(() => updateResume(resume.id, data), {
@@ -41,155 +36,144 @@ export function ResumeForm({ resume }: ResumeFormProps) {
       successMessage: "登録が完了しました。",
       errorMessage: "登録に失敗しました。",
     });
+    form.reset(data);
   };
 
-  const autoSubmit = useDebouncedCallback(() => {
-    form.handleSubmit(handleSubmit)();
-  }, 500);
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>職務経歴書タイトル</FormLabel>
-              <FormControl>
-                <Input onBlur={handleBlur(onBlur)} {...field} />
-              </FormControl>
-              <FormDescription>
-                管理用のタイトルです。職務経歴書には表示されません。
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>Slug</FormLabel>
-              <FormControl>
-                <Input onBlur={handleBlur(onBlur)} {...field} />
-              </FormControl>
-              <FormDescription>
-                公開用URL(/r/:userSlug/:resumeSlug/)に使用するSlugです。
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>名前</FormLabel>
-              <FormControl>
-                <Input placeholder="曽我 周平" onBlur={handleBlur(onBlur)} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="label"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>職種</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="フルスタックエンジニア"
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
+    <div className="container w-full max-w-4xl overflow-x-auto">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          {/* 基本情報 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>基本情報</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field: { ...field } }) => (
+                      <FormItem>
+                        <FormLabel required>レジュメタイトル</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormDescription>管理用のタイトル。公開されません。</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="slug"
+                    render={({ field: { ...field } }) => (
+                      <FormItem>
+                        <FormLabel required>公開用Slug</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          英数字とハイフンのみ。公開URLに使用されます。
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field: { ...field } }) => (
+                      <FormItem>
+                        <FormLabel required>名前</FormLabel>
+                        <FormControl>
+                          <Input placeholder="曽我 周平" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          あなたのフルネーム。レジュメに記載されます。
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="label"
+                    render={({ field: { ...field } }) => (
+                      <FormItem>
+                        <FormLabel>職種</FormLabel>
+                        <FormControl>
+                          <Input placeholder="フルスタックエンジニア" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* リンクカード */}
+          <Card>
+            <CardHeader>
+              <CardTitle>リンク</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {[
+                {
+                  name: "github",
+                  label: "GitHub URL",
+                  placeholder: "https://github.com/ユーザー名",
+                },
+                { name: "qiita", label: "Qiita URL", placeholder: "https://qiita.com/ユーザー名" },
+                { name: "zenn", label: "Zenn URL", placeholder: "https://zenn.dev/ユーザー名" },
+                {
+                  name: "speakerDeck",
+                  label: "Speaker Deck URL",
+                  placeholder: "https://speakerdeck.com/ユーザー名",
+                },
+                {
+                  name: "slideShare",
+                  label: "SlideShare URL",
+                  placeholder: "https://www.slideshare.net/ユーザー名",
+                },
+              ].map(({ name, label, placeholder }) => (
+                <FormField
+                  key={name}
+                  control={form.control}
+                  name={name as keyof ResumeFormData}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <Input placeholder={placeholder} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="github"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>GitHub URL</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://github.com/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="qiita"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>Qiita URL</FormLabel>
-              <FormControl>
-                <Input placeholder="https://qiita.com/..." onBlur={handleBlur(onBlur)} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="zenn"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>Zenn URL</FormLabel>
-              <FormControl>
-                <Input placeholder="https://zenn.dev/..." onBlur={handleBlur(onBlur)} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="speakerDeck"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>Speaker Deck URL</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://speakerdeck.com/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="slideShare"
-          render={({ field: { onBlur, ...field } }) => (
-            <FormItem>
-              <FormLabel>SlideShare URL</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://www.slideshare.net/..."
-                  onBlur={handleBlur(onBlur)}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Separator />
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-yellow-600">
+              {form.formState.isDirty && "※ 未保存の変更があります"}
+            </p>
+            <Button
+              type="submit"
+              className="rounded-full bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+            >
+              保存
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }
