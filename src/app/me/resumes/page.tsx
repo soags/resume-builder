@@ -13,8 +13,8 @@ export default async function ResumesPage() {
     return redirect("/login");
   }
 
-  const resumes = await getResumes(session.user.id!);
-  if (typeof resumes === "undefined") {
+  const result = await getResumes(session.user.id!);
+  if (!result.ok || !result.data) {
     return redirect("/me/resumes");
   }
 
@@ -36,7 +36,7 @@ export default async function ResumesPage() {
 
       <div className="flex justify-center">
         <div className="w-full max-w-5xl overflow-x-auto">
-          <ResumeTable items={resumes} />
+          <ResumeTable items={result.data} />
         </div>
       </div>
     </div>
