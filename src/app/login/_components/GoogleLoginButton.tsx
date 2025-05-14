@@ -4,17 +4,21 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 
 export function GoogleLoginButton() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const loginWithGoogle = async () => {
-    await withClientLogging(() => signIn("google"), {
-      errorMessage: "ログインに失敗しました。",
-      context: "loginWithGoogle",
-      setLoading,
-    });
+    await withClientFeedback(
+      async () => {
+        await signIn("google");
+        return { ok: true, data: null };
+      },
+      {
+        onLoadingChange: setLoading,
+      },
+    );
   };
 
   return (

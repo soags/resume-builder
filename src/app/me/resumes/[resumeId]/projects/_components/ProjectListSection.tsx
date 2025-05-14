@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectDialog } from "./ProjectDialog";
 import { createProject, deleteProject, updateProject, updateProjectOrder } from "../actions";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 
 export type ProjectListSectionProps = {
   resumeId: string;
@@ -29,40 +29,33 @@ export function ProjectListSection({ resumeId, initialProjects }: ProjectListSec
   };
 
   const handleSaveProject = async (data: ProjectFormData) => {
-    await withClientLogging(
-      async () => {
-        const response = editingProject
-          ? await updateProject(resumeId, editingProject.id, data)
-          : await createProject(resumeId, data);
+    await withClientFeedback(async () => {
+      const result = editingProject
+        ? await updateProject(resumeId, editingProject.id, data)
+        : await createProject(resumeId, data);
 
-        if (response) {
-          const updated = editingProject
-            ? projects.map((p) => (p.id === response.id ? response : p))
-            : [...projects, response];
+      if (result.ok && result.data) {
+        const updated = editingProject
+          ? projects.map((p) => (p.id === result.data.id ? result.data : p))
+          : [...projects, result.data];
 
-          setProjects(updated);
-          setDialogOpen(false);
-          setEditingProject(null);
-        }
-      },
-      {
-        context: "ProjectListSection.save",
-        errorMessage: "プロジェクトの保存に失敗しました",
-      },
-    );
+        setProjects(updated);
+        setDialogOpen(false);
+        setEditingProject(null);
+      }
+
+      return result;
+    });
   };
 
   const handleDeleteProject = async (projectId: string) => {
-    await withClientLogging(
-      async () => {
-        await deleteProject(resumeId, projectId);
+    await withClientFeedback(async () => {
+      const result = await deleteProject(resumeId, projectId);
+      if (result.ok) {
         setProjects((prev) => prev.filter((p) => p.id !== projectId));
-      },
-      {
-        context: "ProjectListSection.delete",
-        errorMessage: "プロジェクトの削除に失敗しました",
-      },
-    );
+      }
+      return result;
+    });
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -75,17 +68,12 @@ export function ProjectListSection({ resumeId, initialProjects }: ProjectListSec
 
     setProjects(reordered);
 
-    await withClientLogging(
-      async () => {
+    await withClientFeedback(
+      async () =>
         await updateProjectOrder(
           resumeId,
           reordered.map((p, i) => ({ id: p.id, order: i })),
-        );
-      },
-      {
-        context: "ProjectListSection.updateOrder",
-        errorMessage: "プロジェクトの並び順の更新に失敗しました",
-      },
+        ),
     );
   };
 

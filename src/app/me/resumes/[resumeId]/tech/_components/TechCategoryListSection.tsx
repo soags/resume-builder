@@ -14,7 +14,7 @@ import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 
 export type EditingState = {
   categoryId: string;
@@ -33,76 +33,71 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
   const dndId = useId();
 
   const handleAddCategory = async () => {
-    await withClientLogging(
-      async () => {
-        let newCategory = categories.find((category) => category.name === "");
-        if (!newCategory) {
-          const addedCategory = await addTechCategory(resumeId);
-          if (addedCategory) {
-            newCategory = addedCategory;
-            setCategories([...categories, addedCategory]);
-          }
+    await withClientFeedback(async () => {
+      let newCategory = categories.find((category) => category.name === "");
+      if (!newCategory) {
+        const addResult = await addTechCategory(resumeId);
+        if (!addResult.ok) {
+          return addResult;
         }
-        if (newCategory) {
-          setEditing({ categoryId: newCategory.id, mode: "name" });
-        }
-      },
-      {
-        context: "TechCategoryListSection.add",
-        errorMessage: "カテゴリの追加に失敗しました",
-      },
-    );
+
+        newCategory = addResult.data;
+        setCategories([...categories, addResult.data]);
+      }
+      setEditing({ categoryId: newCategory.id, mode: "name" });
+
+      return { ok: true, data: null };
+    });
   };
 
   const handleUpdateCategoryName = async (categoryId: string, name: string) => {
-    await withClientLogging(
-      async () => {
-        await updateTechCategoryName(resumeId, categoryId, name);
-        const updatedCategories = categories.map((category) =>
-          category.id === categoryId ? { ...category, name } : category,
-        );
-        setCategories(updatedCategories);
-        setEditing(null);
-      },
-      {
-        context: "TechCategoryListSection.updateName",
-        errorMessage: "カテゴリ名の更新に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => {
+      const updateResult = await updateTechCategoryName(resumeId, categoryId, name);
+      if (!updateResult.ok) {
+        return updateResult;
+      }
+
+      const updatedCategories = categories.map((category) =>
+        category.id === categoryId ? { ...category, name } : category,
+      );
+      setCategories(updatedCategories);
+      setEditing(null);
+
+      return updateResult;
+    });
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    await withClientLogging(
-      async () => {
-        await deleteTechCategory(resumeId, categoryId);
-        const updatedCategories = categories.filter((category) => category.id !== categoryId);
-        setCategories(updatedCategories);
-        setEditing(null);
-      },
-      {
-        context: "TechCategoryListSection.delete",
-        errorMessage: "カテゴリの削除に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => {
+      const deleteResult = await deleteTechCategory(resumeId, categoryId);
+      if (!deleteResult.ok) {
+        return deleteResult;
+      }
+
+      const updatedCategories = categories.filter((category) => category.id !== categoryId);
+      setCategories(updatedCategories);
+      setEditing(null);
+
+      return deleteResult;
+    });
   };
 
   const handleSaveStacks = async (categoryId: string, data: TechStackFormData[]) => {
-    await withClientLogging(
-      async () => {
-        const updatedStacks = await saveTechStacks(resumeId, categoryId, data);
-        if (updatedStacks) {
-          const updatedCategories = categories.map((category) =>
-            category.id === categoryId ? { ...category, stacks: updatedStacks } : category,
-          );
-          setCategories(updatedCategories);
-          setEditing(null);
-        }
-      },
-      {
-        context: "TechCategoryListSection.saveStacks",
-        errorMessage: "技術スタックの保存に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => {
+      const saveResult = await saveTechStacks(resumeId, categoryId, data);
+      if (!saveResult.ok) {
+        return saveResult;
+      }
+
+      const updatedStacks = saveResult.data;
+      const updatedCategories = categories.map((category) =>
+        category.id === categoryId ? { ...category, stacks: updatedStacks } : category,
+      );
+      setCategories(updatedCategories);
+      setEditing(null);
+
+      return saveResult;
+    });
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -115,15 +110,7 @@ export function TechCategoryListSection({ resumeId, initialCategories }: TechSta
     const newCategories = arrayMove(categories, oldIndex, newIndex);
     setCategories(newCategories);
 
-    await withClientLogging(
-      async () => {
-        await updateTechCategoryOrder(resumeId, newCategories);
-      },
-      {
-        context: "TechCategoryListSection.updateOrder",
-        errorMessage: "カテゴリの並び順の更新に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => await updateTechCategoryOrder(resumeId, newCategories));
   };
 
   return (

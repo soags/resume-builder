@@ -9,9 +9,8 @@ import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PromotionItemProps } from "./PromotionItem";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 
-// DOMPurifyを使用するためにClient componentでSSRを回避する
 const PromotionItem = dynamic<PromotionItemProps>(
   () => import("./PromotionItem").then((module) => module.PromotionItem),
   { ssr: false },
@@ -27,45 +26,38 @@ export function PromotionList({
   const [promotions, setPromotions] = useState(initialPromotions);
   const [editing, setEditing] = useState<PromotionFormData | null>(null);
 
-  const withReload = async (fn: () => Promise<void>, context: string, errorMessage: string) => {
-    await withClientLogging(
-      async () => {
-        await fn();
-        const data = await getPromotions(resumeId);
-        if (data) {
-          setPromotions(data);
-        }
-      },
-      {
-        context,
-        errorMessage,
-      },
-    );
-    setEditing(null);
-  };
-
   const handleAdd = () => {
     setEditing({ title: "", body: "" } as PromotionFormData);
   };
 
   const handleSave = async (data: PromotionFormData) => {
-    await withReload(
-      async () => {
-        await savePromotion(resumeId, data);
-      },
-      "PromotionList.save",
-      "自己PRの保存に失敗しました",
-    );
+    await withClientFeedback(async () => {
+      const saveResult = await savePromotion(resumeId, data);
+      if (!saveResult.ok) {
+        return { ok: false, error: saveResult.error };
+      }
+      const getResult = await getPromotions(resumeId);
+      if (getResult.ok && getResult.data) {
+        setPromotions(getResult.data);
+      }
+      return getResult;
+    });
+    setEditing(null);
   };
 
   const handleDelete = async (id: string) => {
-    await withReload(
-      async () => {
-        await deletePromotion(resumeId, id);
-      },
-      "PromotionList.delete",
-      "自己PRの削除に失敗しました",
-    );
+    await withClientFeedback(async () => {
+      const deleteResult = await deletePromotion(resumeId, id);
+      if (!deleteResult.ok) {
+        return { ok: false, error: deleteResult.error };
+      }
+      const getResult = await getPromotions(resumeId);
+      if (getResult.ok && getResult.data) {
+        setPromotions(getResult.data);
+      }
+      return getResult;
+    });
+    setEditing(null);
   };
 
   const moveOrder = async (index: number, direction: "up" | "down") => {
@@ -75,13 +67,18 @@ export function PromotionList({
     const source = promotions[index];
     const target = promotions[targetIndex];
 
-    await withReload(
-      async () => {
-        await swapPromotionOrder(resumeId, source.id, target.id);
-      },
-      "PromotionList.moveOrder",
-      "自己PRの並び順の更新に失敗しました",
-    );
+    await withClientFeedback(async () => {
+      const swapResult = await swapPromotionOrder(resumeId, source.id, target.id);
+      if (!swapResult.ok) {
+        return { ok: false, error: swapResult.error };
+      }
+      const getResult = await getPromotions(resumeId);
+      if (getResult.ok && getResult.data) {
+        setPromotions(getResult.data);
+      }
+      return getResult;
+    });
+    setEditing(null);
   };
 
   return (

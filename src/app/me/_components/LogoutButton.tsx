@@ -4,17 +4,21 @@ import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 
 export function LogoutButton() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleLogout = async () => {
-    withClientLogging(() => signOut({ redirectTo: "/login" }), {
-      context: "logout",
-      errorMessage: "ログアウトに失敗しました。",
-      setLoading,
-    });
+    withClientFeedback(
+      async () => {
+        await signOut({ redirectTo: "/login" });
+        return { ok: true, data: null };
+      },
+      {
+        onLoadingChange: setLoading,
+      },
+    );
   };
 
   return (

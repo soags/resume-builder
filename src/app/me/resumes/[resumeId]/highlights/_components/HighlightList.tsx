@@ -15,7 +15,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { SortableHighlightForm } from "./SortableHighlightForm";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 
 export function HighlightList({ resumeId, initial }: { resumeId: string; initial: Highlight[] }) {
   const [highlights, setHighlights] = useState(initial);
@@ -23,64 +23,44 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
 
   useEffect(() => {
     const fetchHighlights = async () => {
-      await withClientLogging(
-        async () => {
-          const data = await getHighlights(resumeId);
-          if (data) {
-            setHighlights(data);
-          }
-        },
-        {
-          context: "HighlightList.fetch",
-          errorMessage: "ハイライトの取得に失敗しました",
-        },
-      );
+      const result = await withClientFeedback(async () => await getHighlights(resumeId));
+      if (result.ok && result.data) {
+        setHighlights(result.data);
+      }
     };
     fetchHighlights();
   }, [resumeId]);
 
   const handleAdd = async () => {
-    await withClientLogging(
-      async () => {
-        await addHighlight(resumeId);
-        const data = await getHighlights(resumeId);
-        if (data) {
-          setHighlights(data);
-        }
-      },
-      {
-        context: "HighlightList.add",
-        errorMessage: "ハイライトの追加に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => {
+      const addResult = await addHighlight(resumeId);
+      if (!addResult.ok) {
+        return addResult;
+      }
+      const getResult = await getHighlights(resumeId);
+      if (getResult.ok && getResult.data) {
+        setHighlights(getResult.data);
+      }
+      return getResult;
+    });
   };
 
   const handleDelete = async (id: string) => {
-    await withClientLogging(
-      async () => {
-        await deleteHighlight(resumeId, id);
-        const data = await getHighlights(resumeId);
-        if (data) {
-          setHighlights(data);
-        }
-      },
-      {
-        context: "HighlightList.delete",
-        errorMessage: "ハイライトの削除に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => {
+      const deleteResult = await deleteHighlight(resumeId, id);
+      if (!deleteResult.ok) {
+        return deleteResult;
+      }
+      const getResult = await getHighlights(resumeId);
+      if (getResult.ok && getResult.data) {
+        setHighlights(getResult.data);
+      }
+      return getResult;
+    });
   };
 
   const debouncedUpdate = useDebouncedCallback(async (id: string, text: string) => {
-    await withClientLogging(
-      async () => {
-        await updateHighlight(resumeId, id, text);
-      },
-      {
-        context: "HighlightList.update",
-        errorMessage: "ハイライトの更新に失敗しました",
-      },
-    );
+    await withClientFeedback(async () => await updateHighlight(resumeId, id, text));
   }, 500);
 
   const handleUpdate = (id: string, text: string) => {
@@ -94,22 +74,7 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
     debouncedUpdate(id, text);
   };
 
-  const updateOrder = async (newHighlights: Highlight[]) => {
-    await withClientLogging(
-      async () => {
-        await updateHighlightOrder(
-          resumeId,
-          newHighlights.map((highlight) => highlight.id),
-        );
-      },
-      {
-        context: "HighlightList.updateOrder",
-        errorMessage: "ハイライトの並び順の更新に失敗しました",
-      },
-    );
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) {
       return;
@@ -118,11 +83,15 @@ export function HighlightList({ resumeId, initial }: { resumeId: string; initial
     const newIndex = highlights.findIndex((item) => item.id === (over.id as string));
     const newHighlights = arrayMove(highlights, oldIndex, newIndex);
 
-    // Optimistic Update
     setHighlights(newHighlights);
 
-    // Background Update
-    updateOrder(newHighlights);
+    await withClientFeedback(
+      async () =>
+        await updateHighlightOrder(
+          resumeId,
+          newHighlights.map((highlight) => highlight.id),
+        ),
+    );
   };
 
   return (
