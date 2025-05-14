@@ -14,29 +14,49 @@ import { useForm } from "react-hook-form";
 import { Resume } from "@/generated/prisma/client";
 import { Input } from "@/components/ui/input";
 import { ResumeFormData, resumeSchema } from "../schema";
-import { updateResume } from "../actions";
-import { withClientLogging } from "@/lib/withClientLogging";
+import { checkSlugDuplicate, updateResume } from "../actions";
+import { withClientFeedback } from "@/lib/withClientFeedback";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useDebounce } from "use-debounce";
+import { useEffect } from "react";
 
 type ResumeFormProps = {
+  userId: string;
   resume: Resume;
 };
 
-export function ResumeForm({ resume }: ResumeFormProps) {
+export function ResumeForm({ userId, resume }: ResumeFormProps) {
   const form = useForm<ResumeFormData>({
     resolver: zodResolver(resumeSchema),
     defaultValues: resume,
   });
 
+  const slugValue = form.watch("slug");
+  const [debouncedSlug] = useDebounce(slugValue, 500);
+
+  // slugの重複チェック
+  useEffect(() => {
+    if (!debouncedSlug) return;
+
+    const check = async () => {
+      const result = await checkSlugDuplicate(userId, debouncedSlug, resume.id);
+      if (result.isDuplicate) {
+        form.setError("slug", {
+          type: "manual",
+          message: "このSlugはすでに使用されています",
+        });
+      } else {
+        form.clearErrors("slug");
+      }
+    };
+
+    check();
+  }, [debouncedSlug, form, resume.id, userId]);
+
   const handleSubmit = async (data: ResumeFormData) => {
-    await withClientLogging(() => updateResume(resume.id, data), {
-      context: "updateResume",
-      successMessage: "登録が完了しました。",
-      errorMessage: "登録に失敗しました。",
-    });
-    form.reset(data);
+    await withClientFeedback(() => updateResume(resume.id, data, userId));
   };
 
   return (

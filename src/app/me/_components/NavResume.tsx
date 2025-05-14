@@ -15,7 +15,7 @@ export function NavResume({ resumeId }: { resumeId: string }) {
   const items = useMemo(
     () => [
       {
-        title: "プロフィール",
+        title: "基本情報",
         url: `/me/resumes/${resumeId}`,
         icon: SquareUser,
       },
